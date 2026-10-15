@@ -1,0 +1,309 @@
+{
+ "body": {
+  "bounds": [-240.0, 240.0, -345.0, 345.0, -70.0, 70.0],
+  "built_from_xml": 0,
+  "built_in": 0,
+  "checksum": "0xFFFFFFFF",
+  "map_id_2": 3006,
+  "max_budget": 30000,
+  "palette_crc": "0xDEADBEEF",
+  "quota_count": 160,
+  "spent_budget": 123,
+  "version": 31
+ },
+ "container": {
+  "blf": {
+   "flags": 2,
+   "version": 1
+  },
+  "cmp": null,
+  "eof": {
+   "endian": ">",
+   "value": null
+  },
+  "fsm": null,
+  "hash": {
+   "recipe": "salted_be32"
+  },
+  "length": {
+   "endian": ">",
+   "mode": "ceil_end",
+   "value": null
+  },
+  "mvar": {
+   "extra_bytes": 0,
+   "flags": 1,
+   "size": 28712,
+   "version": 31
+  },
+  "shape": "plain4",
+  "trailer_hex": "",
+  "truncate_to": null
+ },
+ "description": "Cached-type-19 objects (location names) stored under the plain8 rule (SPEC 3.8); the other rule desynchronises the walk.",
+ "design": {
+  "must_reject": [
+   {
+    "guid": false,
+    "type19": "flag8"
+   }
+  ]
+ },
+ "expect": {
+  "accepted_hypotheses": [
+   {
+    "axis_bits": [20, 21, 19],
+    "guid": false,
+    "type19": "plain8"
+   }
+  ],
+  "end_bit": 10445,
+  "eof_endian": ">",
+  "file_length": 29481,
+  "flavour": {
+   "length_endian": ">",
+   "recipe": "salted_be32"
+  },
+  "free_bits": 218931,
+  "guid_contradicts_version": false,
+  "header_end": 1255,
+  "hypotheses": [
+   {
+    "accepted": false,
+    "axis_bits": [20, 21, 19],
+    "guid": false,
+    "reject": "oob",
+    "slot": 102,
+    "type19": "flag8"
+   },
+   {
+    "accepted": true,
+    "axis_bits": [20, 21, 19],
+    "guid": false,
+    "type19": "plain8"
+   },
+   {
+    "accepted": false,
+    "axis_bits": [20, 21, 19],
+    "guid": true,
+    "reject": "parent",
+    "slot": 1,
+    "type19": "flag8"
+   },
+   {
+    "accepted": false,
+    "axis_bits": [20, 21, 19],
+    "guid": true,
+    "reject": "parent",
+    "slot": 1,
+    "type19": "plain8"
+   }
+  ],
+  "hypothesis": {
+   "axis_bits": [20, 21, 19],
+   "guid": false,
+   "type19": "plain8"
+  },
+  "label_texts": ["SCALE", "Kill Boundary", "Spawn"],
+  "length": 1306,
+  "length_class": "ceil_end",
+  "outcome": "ok",
+  "present_slots": [1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 100, 101, 102, 103, 104, 650],
+  "read_warnings": [],
+  "sections": {
+   "body_fixed": 1255,
+   "end": 10445,
+   "guid": null,
+   "header": 0,
+   "labels": 1626,
+   "quotas": 6605,
+   "slots": 1896
+  },
+  "shape": "plain4",
+  "size": 29481,
+  "slot_ranges": {
+   "1": [1897, 2038],
+   "10": [2238, 2384],
+   "100": [5143, 5292],
+   "101": [5292, 5441],
+   "102": [5441, 5590],
+   "103": [5590, 5739],
+   "104": [5739, 5888],
+   "15": [2388, 2529],
+   "20": [2533, 2706],
+   "25": [2710, 2897],
+   "30": [2901, 3114],
+   "35": [3118, 3272],
+   "40": [3276, 3475],
+   "45": [3479, 3664],
+   "5": [2041, 2234],
+   "50": [3668, 3875],
+   "55": [3879, 4020],
+   "60": [4024, 4211],
+   "65": [4215, 4389],
+   "650": [6433, 6605],
+   "70": [4393, 4583],
+   "75": [4587, 4799],
+   "80": [4803, 4957],
+   "85": [4961, 5129]
+  },
+  "stored_hash": "b26a95d39a55fc23a253f2d0c7f2c64c4d9eed36",
+  "type19_status": "plain8"
+ },
+ "guid": {
+  "hex": null,
+  "present": false
+ },
+ "header": {
+  "activity": 0,
+  "campaign": null,
+  "category": 0,
+  "chdr": {
+   "build_major": 0,
+   "build_minor": 65535
+  },
+  "content_type": 5,
+  "created_by": {
+   "name_hex": "4100",
+   "online": 0,
+   "timestamp": 1700000000,
+   "xuid": "0x0"
+  },
+  "description": {
+   "nul": true,
+   "text": "synthetic reference fixture"
+  },
+  "engine": 1,
+  "engine_icon": 0,
+  "file_length": null,
+  "firefight": null,
+  "game_mode": 4,
+  "hopper_id": null,
+  "ids": ["0x0123456789ABCDEF", "0x0F1E2D3C4B5A6978", "0x1122334455667788", "0x0"],
+  "map_id": 3006,
+  "modified_by": {
+   "name_hex": "4100",
+   "online": 0,
+   "timestamp": 1700000001,
+   "xuid": "0x0"
+  },
+  "title": {
+   "nul": true,
+   "text": "W1 minimal"
+  }
+ },
+ "labels": {
+  "compressed": false,
+  "strings": ["SCALE", "Kill Boundary", "Spawn"]
+ },
+ "layout": {
+  "axis_bits": null,
+  "axis_variant": "ceil",
+  "type19": "plain8"
+ },
+ "name": "type19_plain8",
+ "quotas": {
+  "rows": {
+   "12": [0, 255, 4],
+   "144": [0, 255, 5],
+   "61": [0, 255, 5],
+   "70": [0, 255, 5],
+   "71": [0, 255, 4]
+  }
+ },
+ "role": "positive",
+ "schema": "mjolnir.fixture_spec/1",
+ "slots": [
+  {
+   "folder": 70,
+   "index": 1,
+   "item": 0,
+   "pos": [524288, 1048576, 262144]
+  },
+  {
+   "cached_type": 26,
+   "dims": [2047, 1024, 0, 2046],
+   "folder": 61,
+   "index": 5,
+   "item": 0,
+   "label": 1,
+   "placement": 12,
+   "pos": [123456, 654321, 98765],
+   "shape": 3,
+   "spawn_seq": -5,
+   "team_raw": 0
+  },
+  {
+   "angle": 16383,
+   "color": 7,
+   "folder": 70,
+   "index": 650,
+   "item": 0,
+   "label": 2,
+   "parent_raw": 2,
+   "pos": [0, 0, 0],
+   "up_code": 436468,
+   "up_global": 0
+  },
+  {
+   "cached_type": 19,
+   "extra": [0],
+   "folder": 144,
+   "index": 100,
+   "item": 0,
+   "pos": [1000, 2000, 3000],
+   "team_raw": 0
+  },
+  {
+   "cached_type": 19,
+   "extra": [6],
+   "folder": 144,
+   "index": 101,
+   "item": 0,
+   "pos": [2000, 4000, 6000],
+   "team_raw": 1
+  },
+  {
+   "cached_type": 19,
+   "extra": [201],
+   "folder": 144,
+   "index": 102,
+   "item": 0,
+   "pos": [3000, 6000, 9000],
+   "team_raw": 2
+  },
+  {
+   "cached_type": 19,
+   "extra": [1],
+   "folder": 144,
+   "index": 103,
+   "item": 0,
+   "pos": [4000, 8000, 12000],
+   "team_raw": 3
+  },
+  {
+   "cached_type": 19,
+   "extra": [0],
+   "folder": 144,
+   "index": 104,
+   "item": 0,
+   "pos": [5000, 10000, 15000],
+   "team_raw": 4
+  }
+ ],
+ "slots_gen": {
+  "every": 5,
+  "folders": [70, 71, 61, 12],
+  "items": [0, 1, 2, 3],
+  "kind": "bulk",
+  "labels": [0, 1, 2],
+  "seed": 19,
+  "start": 10,
+  "stop": 90,
+  "style": "mix",
+  "types": [0, 1, 12, 14]
+ },
+ "tail": {
+  "bits": ""
+ }
+}

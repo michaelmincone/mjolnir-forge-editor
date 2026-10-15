@@ -1,0 +1,325 @@
+{
+ "body": {
+  "bounds": [-240.0, 240.0, -345.0, 345.0, -70.0, 70.0],
+  "built_from_xml": 0,
+  "built_in": 0,
+  "checksum": "0xFFFFFFFF",
+  "map_id_2": 3006,
+  "max_budget": 30000,
+  "palette_crc": "0xDEADBEEF",
+  "quota_count": 80,
+  "spent_budget": 123,
+  "version": 31
+ },
+ "container": {
+  "blf": {
+   "flags": 2,
+   "version": 1
+  },
+  "cmp": null,
+  "eof": {
+   "endian": ">",
+   "value": null
+  },
+  "fsm": null,
+  "hash": {
+   "recipe": "salted_be32"
+  },
+  "length": {
+   "endian": ">",
+   "mode": "ceil_end",
+   "value": null
+  },
+  "mvar": {
+   "extra_bytes": 0,
+   "flags": 1,
+   "size": 28712,
+   "version": 31
+  },
+  "shape": "plain4",
+  "trailer_hex": "",
+  "truncate_to": null
+ },
+ "description": "Present slots scattered over the whole range 0..650 with long absent runs, parent links, every extras width (cached types 1, 12, 13, 14) and all shapes; quota rows equal the slot counts.",
+ "expect": {
+  "accepted_hypotheses": [
+   {
+    "axis_bits": [20, 21, 19],
+    "guid": false,
+    "type19": "flag8"
+   },
+   {
+    "axis_bits": [20, 21, 19],
+    "guid": false,
+    "type19": "plain8"
+   }
+  ],
+  "end_bit": 6491,
+  "eof_endian": ">",
+  "file_length": 29481,
+  "flavour": {
+   "length_endian": ">",
+   "recipe": "salted_be32"
+  },
+  "free_bits": 222885,
+  "guid_contradicts_version": false,
+  "header_end": 1255,
+  "hypotheses": [
+   {
+    "accepted": true,
+    "axis_bits": [20, 21, 19],
+    "guid": false,
+    "type19": "flag8"
+   },
+   {
+    "accepted": true,
+    "axis_bits": [20, 21, 19],
+    "guid": false,
+    "type19": "plain8"
+   },
+   {
+    "accepted": false,
+    "axis_bits": [20, 21, 19],
+    "guid": true,
+    "reject": "oob",
+    "slot": 0,
+    "type19": "flag8"
+   },
+   {
+    "accepted": false,
+    "axis_bits": [20, 21, 19],
+    "guid": true,
+    "reject": "oob",
+    "slot": 0,
+    "type19": "plain8"
+   }
+  ],
+  "hypothesis": {
+   "axis_bits": [20, 21, 19],
+   "guid": false,
+   "type19": "flag8"
+  },
+  "label_texts": ["SCALE", "Kill Boundary", "Spawn"],
+  "length": 812,
+  "length_class": "ceil_end",
+  "outcome": "ok",
+  "present_slots": [0, 2, 3, 4, 37, 38, 255, 256, 511, 512, 640, 649, 650],
+  "read_warnings": [],
+  "sections": {
+   "body_fixed": 1255,
+   "end": 6491,
+   "guid": null,
+   "header": 0,
+   "labels": 1626,
+   "quotas": 4571,
+   "slots": 1896
+  },
+  "shape": "plain4",
+  "size": 29481,
+  "slot_ranges": {
+   "0": [1896, 2037],
+   "2": [2038, 2198],
+   "255": [3132, 3273],
+   "256": [3273, 3417],
+   "3": [2198, 2347],
+   "37": [2553, 2724],
+   "38": [2724, 2916],
+   "4": [2347, 2521],
+   "511": [3671, 3856],
+   "512": [3856, 4005],
+   "640": [4132, 4273],
+   "649": [4281, 4422],
+   "650": [4422, 4571]
+  },
+  "stored_hash": "c251c568543c5f8b529c536db8cef048ab8d5c76",
+  "type19_status": "undetermined"
+ },
+ "guid": {
+  "hex": null,
+  "present": false
+ },
+ "header": {
+  "activity": 0,
+  "campaign": null,
+  "category": 0,
+  "chdr": {
+   "build_major": 0,
+   "build_minor": 65535
+  },
+  "content_type": 5,
+  "created_by": {
+   "name_hex": "4100",
+   "online": 0,
+   "timestamp": 1700000000,
+   "xuid": "0x0"
+  },
+  "description": {
+   "nul": true,
+   "text": "synthetic reference fixture"
+  },
+  "engine": 1,
+  "engine_icon": 0,
+  "file_length": null,
+  "firefight": null,
+  "game_mode": 4,
+  "hopper_id": null,
+  "ids": ["0x0123456789ABCDEF", "0x0F1E2D3C4B5A6978", "0x1122334455667788", "0x0"],
+  "map_id": 3006,
+  "modified_by": {
+   "name_hex": "4100",
+   "online": 0,
+   "timestamp": 1700000001,
+   "xuid": "0x0"
+  },
+  "title": {
+   "nul": true,
+   "text": "W1 minimal"
+  }
+ },
+ "labels": {
+  "compressed": false,
+  "strings": ["SCALE", "Kill Boundary", "Spawn"]
+ },
+ "layout": {
+  "axis_bits": null,
+  "axis_variant": "ceil",
+  "type19": "flag8"
+ },
+ "name": "holes",
+ "quotas": {
+  "rows": {
+   "0": [0, 255, 1],
+   "12": [0, 255, 2],
+   "61": [0, 255, 1],
+   "69": [0, 255, 1],
+   "70": [0, 255, 5],
+   "71": [0, 255, 1],
+   "79": [0, 255, 2]
+  }
+ },
+ "role": "positive",
+ "schema": "mjolnir.fixture_spec/1",
+ "slots": [
+  {
+   "angle": 0,
+   "folder": 70,
+   "index": 0,
+   "item": 0,
+   "pos": [1048575, 0, 262144]
+  },
+  {
+   "cached_type": 26,
+   "dims": [512],
+   "folder": 61,
+   "index": 2,
+   "item": 0,
+   "label": 1,
+   "parent_raw": 1,
+   "placement": 12,
+   "pos": [10, 20, 30],
+   "shape": 1,
+   "team_raw": 0
+  },
+  {
+   "cached_type": 1,
+   "extra": [255],
+   "folder": 0,
+   "index": 3,
+   "item": 0,
+   "pos": [500000, 1000000, 250000],
+   "team_raw": 1
+  },
+  {
+   "cached_type": 12,
+   "color": 3,
+   "extra": [7, 31],
+   "folder": 12,
+   "index": 4,
+   "item": 4,
+   "pos": [2, 4, 8],
+   "up_code": 0,
+   "up_global": 0
+  },
+  {
+   "angle": 1,
+   "cached_type": 14,
+   "extra": [0, 0],
+   "folder": 12,
+   "index": 37,
+   "item": 4,
+   "pos": [3, 5, 7],
+   "team_raw": 5,
+   "up_code": 174762,
+   "up_global": 0
+  },
+  {
+   "cached_type": 13,
+   "dims": [100, 200, 300],
+   "extra": [1, 2],
+   "folder": 71,
+   "index": 38,
+   "item": 8,
+   "label": 0,
+   "parent_raw": 38,
+   "pos": [999999, 2000000, 500000],
+   "shape": 2
+  },
+  {
+   "folder": 70,
+   "index": 255,
+   "item": 0,
+   "pos": [262144, 524288, 131072]
+  },
+  {
+   "color": 0,
+   "folder": 70,
+   "index": 256,
+   "item": 0,
+   "pos": [262145, 524289, 131073]
+  },
+  {
+   "dims": [1, 2, 3, 4],
+   "folder": 79,
+   "index": 511,
+   "item": 31,
+   "pos": [7, 7, 7],
+   "respawn": 30,
+   "shape": 3,
+   "spawn_seq": -1
+  },
+  {
+   "folder": 79,
+   "index": 512,
+   "item": 31,
+   "label": 2,
+   "pos": [8, 8, 8],
+   "spawn_seq": 127
+  },
+  {
+   "folder": 69,
+   "index": 640,
+   "item": 1,
+   "pos": [100, 200, 300],
+   "team_raw": 8
+  },
+  {
+   "folder": 70,
+   "index": 649,
+   "item": 0,
+   "parent_raw": 651,
+   "pos": [1, 1, 1]
+  },
+  {
+   "angle": 16383,
+   "folder": 70,
+   "index": 650,
+   "item": 0,
+   "label": 2,
+   "parent_raw": 1,
+   "pos": [1048575, 2097151, 524287]
+  }
+ ],
+ "tail": {
+  "bits": ""
+ }
+}

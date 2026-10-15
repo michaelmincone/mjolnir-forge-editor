@@ -1,0 +1,219 @@
+{
+ "body": {
+  "bounds": [-100.0, 100.0, -200.0, 200.0, -400.0, 400.0],
+  "built_from_xml": 0,
+  "built_in": 0,
+  "checksum": "0xFFFFFFFF",
+  "map_id_2": 3006,
+  "max_budget": 30000,
+  "palette_crc": "0xDEADBEEF",
+  "quota_count": 80,
+  "spent_budget": 123,
+  "version": 31
+ },
+ "container": {
+  "blf": {
+   "flags": 2,
+   "version": 1
+  },
+  "cmp": null,
+  "eof": {
+   "endian": ">",
+   "value": null
+  },
+  "fsm": null,
+  "hash": {
+   "recipe": "salted_be32"
+  },
+  "length": {
+   "endian": ">",
+   "mode": "ceil_end",
+   "value": null
+  },
+  "mvar": {
+   "extra_bytes": 0,
+   "flags": 1,
+   "size": 28712,
+   "version": 31
+  },
+  "shape": "plain4",
+  "trailer_hex": "",
+  "truncate_to": null
+ },
+ "description": "Position field widths [19, 20, 21]: objects at cell 0, the last cell and the middle cell of every axis (extremes family, widths 15 to 23 across extremes and the three axes_* fixtures).",
+ "expect": {
+  "accepted_hypotheses": [
+   {
+    "axis_bits": [19, 20, 21],
+    "guid": false,
+    "type19": "flag8"
+   },
+   {
+    "axis_bits": [19, 20, 21],
+    "guid": false,
+    "type19": "plain8"
+   }
+  ],
+  "end_bit": 4786,
+  "eof_endian": ">",
+  "file_length": 29481,
+  "flavour": {
+   "length_endian": ">",
+   "recipe": "salted_be32"
+  },
+  "free_bits": 224590,
+  "guid_contradicts_version": false,
+  "header_end": 1255,
+  "hypotheses": [
+   {
+    "accepted": true,
+    "axis_bits": [19, 20, 21],
+    "guid": false,
+    "type19": "flag8"
+   },
+   {
+    "accepted": true,
+    "axis_bits": [19, 20, 21],
+    "guid": false,
+    "type19": "plain8"
+   },
+   {
+    "accepted": false,
+    "axis_bits": [19, 20, 21],
+    "guid": true,
+    "reject": "parent",
+    "slot": 0,
+    "type19": "flag8"
+   },
+   {
+    "accepted": false,
+    "axis_bits": [19, 20, 21],
+    "guid": true,
+    "reject": "parent",
+    "slot": 0,
+    "type19": "plain8"
+   }
+  ],
+  "hypothesis": {
+   "axis_bits": [19, 20, 21],
+   "guid": false,
+   "type19": "flag8"
+  },
+  "label_texts": [],
+  "length": 599,
+  "length_class": "ceil_end",
+  "outcome": "ok",
+  "present_slots": [0, 1, 2, 650],
+  "read_warnings": [],
+  "sections": {
+   "body_fixed": 1255,
+   "end": 4786,
+   "guid": null,
+   "header": 0,
+   "labels": 1626,
+   "quotas": 2866,
+   "slots": 1635
+  },
+  "shape": "plain4",
+  "size": 29481,
+  "slot_ranges": {
+   "0": [1635, 1776],
+   "1": [1776, 1917],
+   "2": [1917, 2078],
+   "650": [2725, 2866]
+  },
+  "stored_hash": "7ae95fd692e682def671b702803264826dd73786",
+  "type19_status": "undetermined"
+ },
+ "guid": {
+  "hex": null,
+  "present": false
+ },
+ "header": {
+  "activity": 0,
+  "campaign": null,
+  "category": 0,
+  "chdr": {
+   "build_major": 0,
+   "build_minor": 65535
+  },
+  "content_type": 5,
+  "created_by": {
+   "name_hex": "4100",
+   "online": 0,
+   "timestamp": 1700000000,
+   "xuid": "0x0"
+  },
+  "description": {
+   "nul": true,
+   "text": "synthetic reference fixture"
+  },
+  "engine": 1,
+  "engine_icon": 0,
+  "file_length": null,
+  "firefight": null,
+  "game_mode": 4,
+  "hopper_id": null,
+  "ids": ["0x0123456789ABCDEF", "0x0F1E2D3C4B5A6978", "0x1122334455667788", "0x0"],
+  "map_id": 3006,
+  "modified_by": {
+   "name_hex": "4100",
+   "online": 0,
+   "timestamp": 1700000001,
+   "xuid": "0x0"
+  },
+  "title": {
+   "nul": true,
+   "text": "W1 minimal"
+  }
+ },
+ "labels": {
+  "compressed": false,
+  "strings": []
+ },
+ "layout": {
+  "axis_bits": null,
+  "axis_variant": "ceil",
+  "type19": "flag8"
+ },
+ "name": "axes_19_20_21",
+ "quotas": {
+  "rows": {
+   "70": [0, 255, 4]
+  }
+ },
+ "role": "positive",
+ "schema": "mjolnir.fixture_spec/1",
+ "slots": [
+  {
+   "folder": 70,
+   "index": 0,
+   "item": 0,
+   "pos": [0, 0, 0]
+  },
+  {
+   "angle": 16383,
+   "folder": 70,
+   "index": 1,
+   "item": 0,
+   "pos": [524287, 1048575, 2097151]
+  },
+  {
+   "folder": 70,
+   "index": 2,
+   "item": 0,
+   "pos": [262144, 524288, 1048576],
+   "up_code": 12345,
+   "up_global": 0
+  },
+  {
+   "folder": 70,
+   "index": 650,
+   "item": 0,
+   "pos": [524287, 0, 2097151]
+  }
+ ],
+ "tail": {
+  "bits": ""
+ }
+}

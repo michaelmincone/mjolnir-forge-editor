@@ -1,0 +1,146 @@
+{
+ "body": {
+  "bounds": [-240.0, 240.0, -345.0, 345.0, -70.0, 70.0],
+  "built_from_xml": 0,
+  "built_in": 0,
+  "checksum": "0xFFFFFFFF",
+  "map_id_2": 3006,
+  "max_budget": 30000,
+  "palette_crc": "0xDEADBEEF",
+  "quota_count": 80,
+  "spent_budget": 123,
+  "version": 31
+ },
+ "container": {
+  "blf": {
+   "flags": 2,
+   "version": 1
+  },
+  "cmp": null,
+  "eof": {
+   "endian": ">",
+   "value": null
+  },
+  "fsm": null,
+  "hash": {
+   "recipe": "salted_be32"
+  },
+  "length": {
+   "endian": ">",
+   "mode": "ceil_end",
+   "value": null
+  },
+  "mvar": {
+   "extra_bytes": 0,
+   "flags": 1,
+   "size": 28712,
+   "version": 31
+  },
+  "shape": "plain4",
+  "trailer_hex": "",
+  "truncate_to": null
+ },
+ "description": "Content type 6 (game variant) in the header of a map-variant block.",
+ "expect": {
+  "error": "UnsupportedVariantError",
+  "message_hint": "The content type is 6; a map variant is 5.",
+  "outcome": "error"
+ },
+ "expect_error": "UnsupportedVariantError",
+ "guid": {
+  "hex": null,
+  "present": false
+ },
+ "header": {
+  "activity": 0,
+  "campaign": null,
+  "category": 0,
+  "chdr": {
+   "build_major": 0,
+   "build_minor": 65535
+  },
+  "content_type": 6,
+  "created_by": {
+   "name_hex": "4100",
+   "online": 0,
+   "timestamp": 1700000000,
+   "xuid": "0x0"
+  },
+  "description": {
+   "nul": true,
+   "text": "synthetic reference fixture"
+  },
+  "engine": 1,
+  "engine_icon": 0,
+  "file_length": null,
+  "firefight": null,
+  "game_mode": 4,
+  "hopper_id": null,
+  "ids": ["0x0123456789ABCDEF", "0x0F1E2D3C4B5A6978", "0x1122334455667788", "0x0"],
+  "map_id": 3006,
+  "modified_by": {
+   "name_hex": "4100",
+   "online": 0,
+   "timestamp": 1700000001,
+   "xuid": "0x0"
+  },
+  "title": {
+   "nul": true,
+   "text": "W1 minimal"
+  }
+ },
+ "labels": {
+  "compressed": false,
+  "strings": ["SCALE", "Kill Boundary", "Spawn"]
+ },
+ "layout": {
+  "axis_bits": null,
+  "axis_variant": "ceil",
+  "type19": "flag8"
+ },
+ "name": "bad_content_type",
+ "quotas": {
+  "rows": {
+   "61": [0, 1, 1],
+   "70": [0, 16, 2]
+  }
+ },
+ "role": "negative",
+ "schema": "mjolnir.fixture_spec/1",
+ "slots": [
+  {
+   "folder": 70,
+   "index": 1,
+   "item": 0,
+   "pos": [524288, 1048576, 262144]
+  },
+  {
+   "cached_type": 26,
+   "dims": [2047, 1024, 0, 2046],
+   "folder": 61,
+   "index": 5,
+   "item": 0,
+   "label": 1,
+   "placement": 12,
+   "pos": [123456, 654321, 98765],
+   "shape": 3,
+   "spawn_seq": -5,
+   "team_raw": 0
+  },
+  {
+   "angle": 16383,
+   "color": 7,
+   "folder": 70,
+   "index": 650,
+   "item": 0,
+   "label": 2,
+   "parent_raw": 2,
+   "pos": [0, 0, 0],
+   "up_code": 436468,
+   "up_global": 0
+  }
+ ],
+ "tail": {
+  "bits": ""
+ }
+}

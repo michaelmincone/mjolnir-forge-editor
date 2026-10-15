@@ -1,0 +1,13 @@
+{
+ "schema": "mvarlib.interface_sha256/1",
+ "freeze": "interface freeze v2 (SPEC 6.4, DEC-6.4; v1 plus ExportOptions.raise_quota_max, DECISION D11)",
+ "note": "SHA-256 of the file bytes with CRLF normalised to LF. Test U-22 (tests/unit/test_interface_frozen.py) fails when either file differs. Changing a frozen file needs both teams to agree (G3/G5 and G4); update this record and NOTES.md together. Freeze v2 (gate G5, DECISION D11) changed api.py only: one field appended to ExportOptions; errors.py is unchanged.",
+ "files": {
+  "Addon/mvarlib/api.py": "79cdd92b4d6bc2b41054ae854269b95e8a7fbd12bee3e9d19abc5b501944f371",
+  "Addon/mvarlib/errors.py": "2cd992705ced7e76cd80ea51bbf7256159279e263d385f21569f4862d4d3fc6e"
+ },
+ "v1": {
+  "Addon/mvarlib/api.py": "27bd2a0cd7e7f13386940036d0e07eaa1e5d5aae0b00a9410ea35657cfc5b83e",
+  "Addon/mvarlib/errors.py": "2cd992705ced7e76cd80ea51bbf7256159279e263d385f21569f4862d4d3fc6e"
+ }
+}

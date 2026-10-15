@@ -1,0 +1,15 @@
+schema_version = "1.0.0"
+id = "mjolnir_forge"
+version = "1.0.0"
+name = "Halo: Mjolnir Forge Editor"
+tagline = "Import and export Halo: Reach map variants"
+maintainer = "OWNER NAME <owner@example.com>"      # to be filled by the owner; tools/build_package.py refuses to build while it holds a placeholder
+type = "add-on"
+blender_version_min = "5.2.0"                      # only 5.2.1 is tested
+license = ["SPDX:GPL-3.0-or-later"]                # PLACEHOLDER: the upstream repo declares no licence; the owner must confirm (SPEC DEC-8.10)
+
+[permissions]
+files = "Read and write map variant files chosen by the user"
+
+[build]
+paths_exclude_pattern = ["__pycache__/", "*.pyc", "Resources/ForgeBridge.dll", "parse_palette.py"]

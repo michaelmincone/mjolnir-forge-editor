@@ -1,0 +1,324 @@
+{
+ "body": {
+  "bounds": [-2500.0, 2500.0, 0.0, 10.0, 50.0, 50.0],
+  "built_from_xml": 0,
+  "built_in": 0,
+  "checksum": "0xFFFFFFFF",
+  "map_id_2": 3006,
+  "max_budget": 30000,
+  "palette_crc": "0xDEADBEEF",
+  "quota_count": 256,
+  "spent_budget": 123,
+  "version": 31
+ },
+ "container": {
+  "blf": {
+   "flags": 2,
+   "version": 1
+  },
+  "cmp": null,
+  "eof": {
+   "endian": ">",
+   "value": null
+  },
+  "fsm": null,
+  "hash": {
+   "recipe": "salted_be32"
+  },
+  "length": {
+   "endian": ">",
+   "mode": "ceil_end",
+   "value": null
+  },
+  "mvar": {
+   "extra_bytes": 0,
+   "flags": 1,
+   "size": 28712,
+   "version": 31
+  },
+  "shape": "plain4",
+  "trailer_hex": "",
+  "truncate_to": null
+ },
+ "description": "Field extremes: shape 3 with dims 0 and 0x7FF, spawn sequence -128 and 127, team raw 0 and 9, colour absent and 7, parent raw 0 and 651, label 255 in a 256-entry table, folder 255, item 31, cached type 31, angle 0 and 16383, positions 0 and 2^bits-1, flags2 0 and 3, placement 0x00 and 0xFF; axis bits 23, 15 and 0 (z has a zero range).",
+ "expect": {
+  "accepted_hypotheses": [
+   {
+    "axis_bits": [23, 15, 0],
+    "guid": false,
+    "type19": "flag8"
+   },
+   {
+    "axis_bits": [23, 15, 0],
+    "guid": false,
+    "type19": "plain8"
+   }
+  ],
+  "end_bit": 23066,
+  "eof_endian": ">",
+  "file_length": 29481,
+  "flavour": {
+   "length_endian": ">",
+   "recipe": "salted_be32"
+  },
+  "free_bits": 206310,
+  "guid_contradicts_version": false,
+  "header_end": 1255,
+  "hypotheses": [
+   {
+    "accepted": true,
+    "axis_bits": [23, 15, 0],
+    "guid": false,
+    "type19": "flag8"
+   },
+   {
+    "accepted": true,
+    "axis_bits": [23, 15, 0],
+    "guid": false,
+    "type19": "plain8"
+   },
+   {
+    "accepted": false,
+    "axis_bits": [23, 15, 0],
+    "guid": true,
+    "reject": "parent",
+    "slot": 0,
+    "type19": "flag8"
+   },
+   {
+    "accepted": false,
+    "axis_bits": [23, 15, 0],
+    "guid": true,
+    "reject": "parent",
+    "slot": 0,
+    "type19": "plain8"
+   }
+  ],
+  "hypothesis": {
+   "axis_bits": [23, 15, 0],
+   "guid": false,
+   "type19": "flag8"
+  },
+  "label_texts": [
+   "L000", "L001", "L002", null, "L004", "L005", "L006", "L007", "L008", "L009", "L010", "L011", "L012",
+   "L013", "L014", "L015", "L016", "L017", "L018", "L019", "L020", "L021", "L022", "L023", "L024", "L025",
+   "L026", "L027", "L028", "L029", "L030", "L031", "L032", "L033", "L034", "L035", "L036", "L037", "L038",
+   "L039", "L040", "L041", "L042", "L043", "L044", "L045", "L046", "L047", "L048", "L049", "L050", "L051",
+   "L052", "L053", "L054", "L055", "L056", "L057", "L058", "L059", "L060", "L061", "L062", "L063", "L064",
+   "L065", "L066", "L067", "L068", "L069", "L070", "L071", "L072", "L073", "L074", "L075", "L076", "L077",
+   "L078", "L079", "L080", "L081", "L082", "L083", "L084", "L085", "L086", "L087", "L088", "L089", "L090",
+   "L091", "L092", "L093", "L094", "L095", "L096", "L097", "L098", "L099", null, "L101", "L102", "L103",
+   "L104", "L105", "L106", "L107", "L108", "L109", "L110", "L111", "L112", "L113", "L114", "L115", "L116",
+   "L117", "L118", "L119", "L120", "L121", "L122", "L123", "L124", "L125", "L126", "L127", "L128", "L129",
+   "L130", "L131", "L132", "L133", "L134", "L135", "L136", "L137", "L138", "L139", "L140", "L141", "L142",
+   "L143", "L144", "L145", "L146", "L147", "L148", "L149", "L150", "L151", "L152", "L153", "L154", "L155",
+   "L156", "L157", "L158", "L159", "L160", "L161", "L162", "L163", "L164", "L165", "L166", "L167", "L168",
+   "L169", "L170", "L171", "L172", "L173", "L174", "L175", "L176", "L177", "L178", "L179", "L180", "L181",
+   "L182", "L183", "L184", "L185", "L186", "L187", "L188", "L189", "L190", "L191", "L192", "L193", "L194",
+   "L195", "L196", "L197", "L198", "L199", "L200", "L201", "L202", "L203", "L204", "L205", "L206", "L207",
+   "L208", "L209", "L210", "L211", "L212", "L213", "L214", "L215", "L216", "L217", "L218", "L219", "L220",
+   "L221", "L222", "L223", "L224", "L225", "L226", "L227", "L228", "L229", "L230", "L231", "L232", "L233",
+   "L234", "L235", "L236", "L237", "L238", "L239", "L240", "L241", "L242", "L243", "L244", "L245", "L246",
+   "L247", "L248", "L249", "L250", "L251", "L252", "L253", null, "L255"
+  ],
+  "length": 2884,
+  "length_class": "ceil_end",
+  "outcome": "ok",
+  "present_slots": [0, 1, 2, 3, 4, 5, 6, 650],
+  "read_warnings": ["W_ZERO_RANGE_AXIS"],
+  "sections": {
+   "body_fixed": 1255,
+   "end": 23066,
+   "guid": null,
+   "header": 0,
+   "labels": 1626,
+   "quotas": 16922,
+   "slots": 15061
+  },
+  "shape": "plain4",
+  "size": 29481,
+  "slot_ranges": {
+   "0": [15061, 15180],
+   "1": [15180, 15374],
+   "2": [15374, 15532],
+   "3": [15532, 15705],
+   "4": [15705, 15886],
+   "5": [15886, 16013],
+   "6": [16013, 16140],
+   "650": [16783, 16922]
+  },
+  "stored_hash": "fbe8a24ea1bad04e4b1ac1176b4cd6809cdaaee9",
+  "type19_status": "undetermined"
+ },
+ "guid": {
+  "hex": null,
+  "present": false
+ },
+ "header": {
+  "activity": 0,
+  "campaign": null,
+  "category": 0,
+  "chdr": {
+   "build_major": 0,
+   "build_minor": 65535
+  },
+  "content_type": 5,
+  "created_by": {
+   "name_hex": "4100",
+   "online": 0,
+   "timestamp": 1700000000,
+   "xuid": "0x0"
+  },
+  "description": {
+   "nul": true,
+   "text": "synthetic reference fixture"
+  },
+  "engine": 1,
+  "engine_icon": 0,
+  "file_length": null,
+  "firefight": null,
+  "game_mode": 4,
+  "hopper_id": null,
+  "ids": ["0x0123456789ABCDEF", "0x0F1E2D3C4B5A6978", "0x1122334455667788", "0x0"],
+  "map_id": 3006,
+  "modified_by": {
+   "name_hex": "4100",
+   "online": 0,
+   "timestamp": 1700000001,
+   "xuid": "0x0"
+  },
+  "title": {
+   "nul": true,
+   "text": "W1 minimal"
+  }
+ },
+ "labels": {
+  "compressed": false,
+  "strings_gen": {
+   "absent": [3, 100, 254],
+   "count": 256,
+   "format": "L%03d"
+  }
+ },
+ "layout": {
+  "axis_bits": null,
+  "axis_variant": "ceil",
+  "type19": "flag8"
+ },
+ "name": "extremes",
+ "quotas": {
+  "rows": {
+   "0": [0, 255, 1],
+   "1": [0, 255, 1],
+   "128": [0, 255, 1],
+   "2": [0, 255, 1],
+   "254": [0, 255, 1],
+   "255": [0, 255, 2]
+  }
+ },
+ "role": "positive",
+ "schema": "mjolnir.fixture_spec/1",
+ "slots": [
+  {
+   "angle": 0,
+   "flags2": 0,
+   "folder": 0,
+   "index": 0,
+   "item": 0,
+   "placement": 0,
+   "pos": [0, 0, 0],
+   "respawn": 0,
+   "spawn_seq": -128,
+   "team_raw": 0
+  },
+  {
+   "angle": 16383,
+   "cached_type": 31,
+   "color": 7,
+   "dims": [0, 2047, 0, 2047],
+   "flags2": 3,
+   "folder": 255,
+   "index": 1,
+   "item": 31,
+   "label": 255,
+   "parent_raw": 651,
+   "placement": 255,
+   "pos": [8388607, 32767, 0],
+   "respawn": 255,
+   "shape": 3,
+   "spawn_seq": 127,
+   "team_raw": 9,
+   "up_code": 1048571,
+   "up_global": 0
+  },
+  {
+   "cached_type": 13,
+   "color": 0,
+   "dims": [2047],
+   "extra": [31, 31],
+   "flags2": 1,
+   "index": 2,
+   "label": 0,
+   "parent_raw": 1,
+   "pos": [4194304, 16384, 0],
+   "shape": 1,
+   "team_raw": 1,
+   "up_code": 0,
+   "up_global": 0
+  },
+  {
+   "cached_type": 12,
+   "color": 4,
+   "dims": [0, 1, 2046],
+   "extra": [0, 0],
+   "folder": 1,
+   "index": 3,
+   "item": 1,
+   "label": 128,
+   "pos": [1, 1, 0],
+   "shape": 2
+  },
+  {
+   "cached_type": 14,
+   "dims": [2046, 1, 1024, 2047],
+   "extra": [31, 0],
+   "folder": 128,
+   "index": 4,
+   "item": 16,
+   "label": 253,
+   "pos": [8388606, 32766, 0],
+   "shape": 3
+  },
+  {
+   "cached_type": 1,
+   "extra": [255],
+   "folder": 254,
+   "index": 5,
+   "item": 30,
+   "pos": [2, 3, 0],
+   "team_raw": 8
+  },
+  {
+   "cached_type": 1,
+   "extra": [0],
+   "folder": 2,
+   "index": 6,
+   "item": 2,
+   "pos": [3, 4, 0]
+  },
+  {
+   "angle": 8192,
+   "folder": 255,
+   "index": 650,
+   "item": 0,
+   "parent_raw": 0,
+   "pos": [8388607, 0, 0],
+   "respawn": 1,
+   "up_code": 436468,
+   "up_global": 0
+  }
+ ],
+ "tail": {
+  "bits": ""
+ }
+}

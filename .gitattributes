@@ -61,3 +61,8 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+# macOS port: map variants and game variants are binary, never normalise line endings.
+*.mvar binary
+*.bin  binary
+*.mglo binary

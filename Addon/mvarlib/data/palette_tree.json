@@ -1,0 +1,323 @@
+{
+ "schema": "mvarlib.palette_tree/1",
+ "source": "names only; the 'Forge World Palette' collection tree of Halo Reach.blend (tools/gen_palette_tree.py); leaves are collections that directly hold objects",
+ "groups": [
+  {
+   "name": "Structure",
+   "groups": [
+    {
+     "name": "Building Blocks",
+     "leaves": [
+      "Block, 1x1",
+      "Block, 1x1, Flat",
+      "Block, 1x1, Short",
+      "Block, 1x1, Tall",
+      "Block, 1x1, Tall And Thin",
+      "Block, 1x2",
+      "Block, 2x1, Flat",
+      "Block, 1x4",
+      "Block, 2x2",
+      "Block, 2x2, Flat",
+      "Block, 2x2, Short",
+      "Block, 2x2, Tall",
+      "Block, 2x3",
+      "Block, 2x4",
+      "Block, 3x1, Flat",
+      "Block, 3x3",
+      "Block, 3x3, Flat",
+      "Block, 3x3, Short",
+      "Block, 3x3, Tall",
+      "Block, 3x4",
+      "Block, 4x4",
+      "Block, 4x4, Flat",
+      "Block, 4x4, Short",
+      "Block, 4x4, Tall",
+      "Block, 5x1, Short",
+      "Block, 5x5, Flat"
+     ]
+    },
+    {
+     "name": "Bridges And Platforms",
+     "leaves": [
+      "Bridge, Small",
+      "Bridge, Medium",
+      "Bridge, Large",
+      "Bridge, XLarge",
+      "Bridge, Diagonal",
+      "Bridge, Diag, Small",
+      "Dish, Open",
+      "Dish",
+      "Corner, 45 Degrees",
+      "Corner, 2x2",
+      "Corner, 4x4",
+      "Landing Pad",
+      "Platform, Ramped",
+      "Platform, Large",
+      "Platform, XL",
+      "Platform, XXL",
+      "Platform, Y",
+      "Platform, Y, Large",
+      "Walkway, Large",
+      "Sniper Nest",
+      "Staircase",
+      "Bridge"
+     ]
+    },
+    {
+     "name": "Buildings",
+     "leaves": [
+      "Bunker, Small",
+      "Bunker, Small, Covered",
+      "Bunker, Box",
+      "Bunker, Round",
+      "Bunker, Ramp",
+      "Pyramid",
+      "Tower, 2 Story",
+      "Tower, 3 Story",
+      "Tower, Tall",
+      "Room, Triple",
+      "Room, Double",
+      "Bunker, Overlook"
+     ]
+    },
+    {
+     "name": "Decorative",
+     "leaves": [
+      "Antenna, Small",
+      "Antenna, Satellite",
+      "Brace",
+      "Brace, Large",
+      "Brace, Tunnel",
+      "Column",
+      "Cover",
+      "Cover, Glass",
+      "Glass Sail",
+      "Cover, Crenellation",
+      "Railing, Small",
+      "Railing, Medium",
+      "Railing, Long",
+      "Teleporter Frame",
+      "Strut",
+      "Large Walkway Cover"
+     ]
+    },
+    {
+     "name": "Doors, Windows, And Walls",
+     "leaves": [
+      "Door",
+      "Door, Double",
+      "Window, Double",
+      "Wall",
+      "Wall, Double",
+      "Wall, Curved",
+      "Wall, Coliseum",
+      "Window, Colesium",
+      "Tunnel, Short",
+      "Tunnel, Long",
+      "Window",
+      "Wall, Corner",
+      "Wall (MCC)",
+      "Door (MCC)"
+     ]
+    },
+    {
+     "name": "Inclines",
+     "leaves": [
+      "Bank, 1x1",
+      "Bank, 1x2",
+      "Bank, 2x1",
+      "Bank, 2x2",
+      "Ramp, 1x2",
+      "Ramp, 1x2, Shallow",
+      "Ramp, 2x2",
+      "Ramp, 2x2, Steep",
+      "Ramp, Circular, Small",
+      "Ramp, Circular, Large",
+      "Ramp, Bridge, Small",
+      "Ramp, Bridge, Medium",
+      "Ramp, Bridge, Large",
+      "Ramp, XL",
+      "Ramp, Stunt"
+     ]
+    },
+    {
+     "name": "Natural",
+     "leaves": [
+      "Rock, Small",
+      "Rock, Flat",
+      "Rock, Medium 1",
+      "Rock, Medium 2",
+      "Rock, Spire 1",
+      "Rock, Spire 2",
+      "Rock, Seastack",
+      "Rock, Arch",
+      "Driftwood 1",
+      "Driftwood 2",
+      "Driftwood 3",
+      "Rock, Spire 3",
+      "Tree, Dead"
+     ]
+    }
+   ],
+   "leaves": [
+    "Grid"
+   ]
+  },
+  {
+   "name": "Scenery",
+   "groups": [
+    {
+     "name": "Barricades",
+     "leaves": [
+      "Jersey Barrier",
+      "Jersey Barrier, Short",
+      "Heavy Barrier"
+     ]
+    },
+    {
+     "name": "Crates",
+     "leaves": [
+      "Crate, Small, Closed",
+      "Crate, Metal, Multi",
+      "Crate, Metal, Single",
+      "Crate, Fully Open",
+      "Crate, Forerunner, Small",
+      "Crate, Forerunner, Large"
+     ]
+    },
+    {
+     "name": "Palletes",
+     "leaves": [
+      "Pallet",
+      "Pallet, Metal",
+      "Pallet, Large"
+     ]
+    }
+   ],
+   "leaves": [
+    "Dumpster",
+    "Dumpster, Tall",
+    "Sandbag Wall",
+    "Sandbag, Turret Wall",
+    "Sandbag Corner, 45",
+    "Sandbag Corner, 90",
+    "Sandbag Endcap",
+    "Barricade, Small",
+    "Barricade, Large",
+    "Street Cone"
+   ]
+  },
+  {
+   "name": "Gadgets",
+   "groups": [
+    {
+     "name": "Explosives",
+     "leaves": [
+      "Fusion Coil",
+      "Landmine",
+      "Plasma Battery",
+      "Propane Tank"
+     ]
+    },
+    {
+     "name": "Cannons, Men",
+     "leaves": [
+      "Cannon, Man",
+      "Cannon, Man, Heavy",
+      "Cannon, Man, Light",
+      "Cannon, Vehicle",
+      "Gravity Lift",
+      "Cannon, Man, Forerunner",
+      "Cannon, Man, Heavy, Forerunner",
+      "Cannon, Man, Light, Forerunner",
+      "Gravity Lift, Forerunner",
+      "Gravity Lift, Tall, Forerunner",
+      "Cannon, Man, Human"
+     ]
+    },
+    {
+     "name": "Powerups",
+     "leaves": [
+      "Camo Powerup",
+      "Overshield",
+      "Custom Powerup"
+     ]
+    },
+    {
+     "name": "Teleporters",
+     "leaves": [
+      "Two-Way Node",
+      "Sender Node",
+      "Receiver Node"
+     ]
+    },
+    {
+     "name": "Toys",
+     "leaves": [
+      "Tin Cup",
+      "Golf Ball",
+      "Kill Ball",
+      "Soccer Ball",
+      "Die"
+     ]
+    },
+    {
+     "name": "Lights",
+     "leaves": [
+      "Light, Red",
+      "Light, Blue",
+      "Light, Green",
+      "Light, Orange",
+      "Light, Purple",
+      "Light, Yellow",
+      "Light, White"
+     ]
+    }
+   ],
+   "leaves": [
+    "Health Station",
+    "Ammo Cabinet"
+   ]
+  },
+  {
+   "name": "Spawning",
+   "leaves": [
+    "Initial Spawn",
+    "Respawn Point"
+   ]
+  },
+  {
+   "name": "Objectives",
+   "leaves": [
+    "Flag Stand",
+    "Capture Plate",
+    "Hill Marker"
+   ]
+  },
+  {
+   "name": "Hidden",
+   "groups": [
+    {
+     "name": "Invisible",
+     "leaves": [
+      "Block, 1x1, Small, Invisible",
+      "Block, 1x1, Flat, Invisible",
+      "Block, 1x1, Invisible",
+      "Block, 2x1, Flat, Invisible",
+      "Block, 2x2, Flat, Invisible",
+      "Block, 2x2, Invisible",
+      "Block, 2x2x2, Invisible",
+      "Block, 4x2, Flat, Invisible",
+      "Block, 4x4, Flat, Invisible",
+      "Block, 4x4x2, Invisible",
+      "Block, 4x4x4, Invisible"
+     ]
+    }
+   ],
+   "leaves": [
+    "Generator",
+    "Vending Machine"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,22 @@
+{
+ "schema": "mvarlib.cached_type_hints/1",
+ "note": "Hints for the cached type (object class, 5 bits) of NEW objects, SPEC 7.4. Values are unverified (tag I): they come from the comment in ForgeLib/ForgeObject.cs and from the extras table of SPEC 3.8, not from a real map variant. A class learned from the template always wins over this file.",
+ "assumed_zero_groups": ["Structure", "Scenery"],
+ "known_classes": {
+  "0": {"name": "props, weapons, respawns, flag stands, hill markers, uncached things, everything", "extra_bits": [], "source": "ForgeObject.cs comment; P:JS:274-284"},
+  "1": {"name": "guns, some initial spawns (spare clips)", "extra_bits": [8], "source": "ForgeObject.cs comment; P:JS:274-276"},
+  "2": {"name": "grenades", "extra_bits": [], "source": "ForgeObject.cs comment"},
+  "7": {"name": "light vehicles (ghost, mongoose, warthog, revenant, shade turret)", "extra_bits": [], "source": "ForgeObject.cs comment"},
+  "8": {"name": "heavy vehicles", "extra_bits": [], "source": "ForgeObject.cs comment"},
+  "9": {"name": "flying vehicles", "extra_bits": [], "source": "ForgeObject.cs comment"},
+  "12": {"name": "two-way teleporter (channel, passability)", "extra_bits": [5, 5], "source": "ForgeObject.cs comment; P:JS:279-281"},
+  "13": {"name": "teleporter sender (channel, passability)", "extra_bits": [5, 5], "source": "ForgeObject.cs comment; P:JS:279-281"},
+  "14": {"name": "teleporter receiver (channel, passability)", "extra_bits": [5, 5], "source": "ForgeObject.cs comment; P:JS:279-281"},
+  "15": {"name": "initial spawn, respawn", "extra_bits": [], "source": "ForgeObject.cs comment"},
+  "16": {"name": "flag zone, respawn zone", "extra_bits": [], "source": "ForgeObject.cs comment"},
+  "19": {"name": "location name (index); the stored form is DISPUTED, SPEC 3.8 / X5", "extra_bits": null, "source": "P:JS:282-283; W:HMS; W:BLF"},
+  "25": {"name": "soft safe boundary", "extra_bits": [], "source": "ForgeObject.cs comment"},
+  "26": {"name": "kill boundary, some respawn", "extra_bits": [], "source": "ForgeObject.cs comment"},
+  "27": {"name": "initial loadout camera", "extra_bits": [], "source": "ForgeObject.cs comment"}
+ }
+}

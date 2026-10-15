@@ -1,0 +1,31 @@
+{
+ "schema": "mvarlib.maps/1",
+ "source": "ReachVariantTool native/src/ReachVariantTool/ui/script_editor/page_map_perms.cpp:15-58; names must equal the map keys of Addon/objects.py",
+ "maps": [
+  {"id": 1000, "name": "Sword Base", "source": "RVT page_map_perms.cpp:15-58"},
+  {"id": 1020, "name": "Countdown", "source": "RVT page_map_perms.cpp:15-58"},
+  {"id": 1035, "name": "Boardwalk", "source": "RVT page_map_perms.cpp:15-58"},
+  {"id": 1040, "name": "Zealot", "source": "RVT page_map_perms.cpp:15-58"},
+  {"id": 1055, "name": "Powerhouse", "source": "RVT page_map_perms.cpp:15-58"},
+  {"id": 1080, "name": "Boneyard", "source": "RVT page_map_perms.cpp:15-58"},
+  {"id": 1150, "name": "Reflection", "source": "RVT page_map_perms.cpp:15-58"},
+  {"id": 1200, "name": "Spire", "source": "RVT page_map_perms.cpp:15-58"},
+  {"id": 1500, "name": "Condemned", "source": "RVT page_map_perms.cpp:15-58"},
+  {"id": 1510, "name": "Highlands", "source": "RVT page_map_perms.cpp:15-58"},
+  {"id": 2001, "name": "Anchor 9", "source": "RVT page_map_perms.cpp:15-58"},
+  {"id": 2002, "name": "Breakpoint", "source": "RVT page_map_perms.cpp:15-58"},
+  {"id": 2004, "name": "Tempest", "source": "RVT page_map_perms.cpp:15-58"},
+  {"id": 3006, "name": "Forge World", "source": "RVT page_map_perms.cpp:15-58"},
+  {"id": 10010, "name": "Penance", "source": "RVT page_map_perms.cpp:15-58"},
+  {"id": 10020, "name": "Battle Canyon", "source": "RVT page_map_perms.cpp:15-58"},
+  {"id": 10030, "name": "Ridgeline", "source": "RVT page_map_perms.cpp:15-58"},
+  {"id": 10050, "name": "Breakneck", "source": "RVT page_map_perms.cpp:15-58"},
+  {"id": 10060, "name": "High Noon", "source": "RVT page_map_perms.cpp:15-58"},
+  {"id": 10070, "name": "Solitary", "source": "RVT page_map_perms.cpp:15-58"}
+ ],
+ "not_stock_ids": [
+  {"id": 1, "note": "Unknown 1 (RVT placeholder)"},
+  {"id": 1001, "note": "Unused (DLC Sword Base)"},
+  {"id": 1056, "note": "Unused (DLC Powerhouse)"}
+ ]
+}

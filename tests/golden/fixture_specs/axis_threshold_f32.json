@@ -1,0 +1,306 @@
+{
+ "body": {
+  "bounds": [0.0, 546.1333618164062, -345.0, 345.0, -70.0, 70.0],
+  "built_from_xml": 0,
+  "built_in": 0,
+  "checksum": "0xFFFFFFFF",
+  "map_id_2": 3006,
+  "max_budget": 30000,
+  "palette_crc": "0xDEADBEEF",
+  "quota_count": 80,
+  "spent_budget": 123,
+  "version": 31
+ },
+ "container": {
+  "blf": {
+   "flags": 2,
+   "version": 1
+  },
+  "cmp": null,
+  "eof": {
+   "endian": ">",
+   "value": null
+  },
+  "fsm": null,
+  "hash": {
+   "recipe": "salted_be32"
+  },
+  "length": {
+   "endian": ">",
+   "mode": "ceil_end",
+   "value": null
+  },
+  "mvar": {
+   "extra_bytes": 0,
+   "flags": 1,
+   "size": 28712,
+   "version": 31
+  },
+  "shape": "plain4",
+  "trailer_hex": "",
+  "truncate_to": null
+ },
+ "description": "x range = f32(2^20 x 0.0005208333604969084) (the float32-step threshold): ceil and trunc9999 give 21 bits, ceil_f32 20. Written with 20 bits, the minority reading.",
+ "design": {
+  "must_reject": [
+   {
+    "axis_bits": [21, 21, 19],
+    "guid": false
+   }
+  ]
+ },
+ "expect": {
+  "accepted_hypotheses": [
+   {
+    "axis_bits": [20, 21, 19],
+    "guid": false,
+    "type19": "flag8"
+   },
+   {
+    "axis_bits": [20, 21, 19],
+    "guid": false,
+    "type19": "plain8"
+   }
+  ],
+  "end_bit": 9779,
+  "eof_endian": ">",
+  "file_length": 29481,
+  "flavour": {
+   "length_endian": ">",
+   "recipe": "salted_be32"
+  },
+  "free_bits": 219597,
+  "guid_contradicts_version": false,
+  "header_end": 1255,
+  "hypotheses": [
+   {
+    "accepted": false,
+    "axis_bits": [21, 21, 19],
+    "guid": false,
+    "reject": "oob",
+    "slot": 2,
+    "type19": "flag8"
+   },
+   {
+    "accepted": true,
+    "axis_bits": [20, 21, 19],
+    "guid": false,
+    "type19": "flag8"
+   },
+   {
+    "accepted": false,
+    "axis_bits": [21, 21, 19],
+    "guid": false,
+    "reject": "oob",
+    "slot": 2,
+    "type19": "plain8"
+   },
+   {
+    "accepted": true,
+    "axis_bits": [20, 21, 19],
+    "guid": false,
+    "type19": "plain8"
+   },
+   {
+    "accepted": false,
+    "axis_bits": [21, 21, 19],
+    "guid": true,
+    "reject": "folder",
+    "slot": 0,
+    "type19": "flag8"
+   },
+   {
+    "accepted": false,
+    "axis_bits": [20, 21, 19],
+    "guid": true,
+    "reject": "folder",
+    "slot": 0,
+    "type19": "flag8"
+   },
+   {
+    "accepted": false,
+    "axis_bits": [21, 21, 19],
+    "guid": true,
+    "reject": "folder",
+    "slot": 0,
+    "type19": "plain8"
+   },
+   {
+    "accepted": false,
+    "axis_bits": [20, 21, 19],
+    "guid": true,
+    "reject": "folder",
+    "slot": 0,
+    "type19": "plain8"
+   }
+  ],
+  "hypothesis": {
+   "axis_bits": [20, 21, 19],
+   "guid": false,
+   "type19": "flag8"
+  },
+  "label_texts": ["SCALE", "Kill Boundary", "Spawn"],
+  "length": 1223,
+  "length_class": "ceil_end",
+  "outcome": "ok",
+  "present_slots": [
+   1, 5, 8, 31, 54, 77, 100, 123, 146, 169, 192, 215, 238, 261, 284, 307, 330, 353, 376, 399, 422, 445, 468,
+   491, 514, 537, 560, 583, 650
+  ],
+  "read_warnings": [],
+  "sections": {
+   "body_fixed": 1255,
+   "end": 9779,
+   "guid": null,
+   "header": 0,
+   "labels": 1626,
+   "quotas": 7859,
+   "slots": 1896
+  },
+  "shape": "plain4",
+  "size": 29481,
+  "slot_ranges": {
+   "1": [1897, 2038],
+   "100": [2996, 3214],
+   "123": [3236, 3462],
+   "146": [3484, 3707],
+   "169": [3729, 3925],
+   "192": [3947, 4152],
+   "215": [4174, 4334],
+   "238": [4356, 4535],
+   "261": [4557, 4732],
+   "284": [4754, 4952],
+   "307": [4974, 5200],
+   "31": [2422, 2612],
+   "330": [5222, 5384],
+   "353": [5406, 5557],
+   "376": [5579, 5728],
+   "399": [5750, 5954],
+   "422": [5976, 6181],
+   "445": [6203, 6396],
+   "468": [6418, 6554],
+   "491": [6576, 6783],
+   "5": [2041, 2234],
+   "514": [6805, 7010],
+   "537": [7032, 7212],
+   "54": [2634, 2808],
+   "560": [7234, 7439],
+   "583": [7461, 7621],
+   "650": [7687, 7859],
+   "77": [2830, 2974],
+   "8": [2236, 2400]
+  },
+  "stored_hash": "ba23ee31d7d2501593111864fc3bea48e570dbe2",
+  "type19_status": "undetermined"
+ },
+ "guid": {
+  "hex": null,
+  "present": false
+ },
+ "header": {
+  "activity": 0,
+  "campaign": null,
+  "category": 0,
+  "chdr": {
+   "build_major": 0,
+   "build_minor": 65535
+  },
+  "content_type": 5,
+  "created_by": {
+   "name_hex": "4100",
+   "online": 0,
+   "timestamp": 1700000000,
+   "xuid": "0x0"
+  },
+  "description": {
+   "nul": true,
+   "text": "synthetic reference fixture"
+  },
+  "engine": 1,
+  "engine_icon": 0,
+  "file_length": null,
+  "firefight": null,
+  "game_mode": 4,
+  "hopper_id": null,
+  "ids": ["0x0123456789ABCDEF", "0x0F1E2D3C4B5A6978", "0x1122334455667788", "0x0"],
+  "map_id": 3006,
+  "modified_by": {
+   "name_hex": "4100",
+   "online": 0,
+   "timestamp": 1700000001,
+   "xuid": "0x0"
+  },
+  "title": {
+   "nul": true,
+   "text": "W1 minimal"
+  }
+ },
+ "labels": {
+  "compressed": false,
+  "strings": ["SCALE", "Kill Boundary", "Spawn"]
+ },
+ "layout": {
+  "axis_bits": null,
+  "axis_variant": "ceil_f32",
+  "type19": "flag8"
+ },
+ "name": "axis_threshold_f32",
+ "quotas": {
+  "rows": {
+   "12": [0, 255, 6],
+   "61": [0, 255, 7],
+   "70": [0, 255, 9],
+   "71": [0, 255, 7]
+  }
+ },
+ "role": "positive",
+ "schema": "mjolnir.fixture_spec/1",
+ "slots": [
+  {
+   "folder": 70,
+   "index": 1,
+   "item": 0,
+   "pos": [524288, 1048576, 262144]
+  },
+  {
+   "cached_type": 26,
+   "dims": [2047, 1024, 0, 2046],
+   "folder": 61,
+   "index": 5,
+   "item": 0,
+   "label": 1,
+   "placement": 12,
+   "pos": [123456, 654321, 98765],
+   "shape": 3,
+   "spawn_seq": -5,
+   "team_raw": 0
+  },
+  {
+   "angle": 16383,
+   "color": 7,
+   "folder": 70,
+   "index": 650,
+   "item": 0,
+   "label": 2,
+   "parent_raw": 2,
+   "pos": [0, 0, 0],
+   "up_code": 436468,
+   "up_global": 0
+  }
+ ],
+ "slots_gen": {
+  "every": 23,
+  "folders": [70, 71, 61, 12],
+  "items": [0, 1, 2, 3],
+  "kind": "bulk",
+  "labels": [0, 1, 2],
+  "seed": 20,
+  "start": 8,
+  "stop": 600,
+  "style": "mix",
+  "types": [0, 1, 12, 14, 26]
+ },
+ "tail": {
+  "bits": ""
+ }
+}

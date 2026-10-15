@@ -1,0 +1,108 @@
+{
+ "L": 622,
+ "axis_bits": [20, 21, 19],
+ "edits": {
+  "E1": {
+   "L": 622,
+   "end_bit": 4970,
+   "file_sha256": "32296dac74f00aea41f16859052f27a5230c29a556ddcc3b3edcefb19b64cf32",
+   "fixture": "w1_E1",
+   "stored_sha1": "770d7849af8a19d13deb739ea8fd97d77da956d7"
+  },
+  "E2": {
+   "L": 639,
+   "end_bit": 5110,
+   "file_sha256": "9055a41eb6690c26d53b701a208c4531a7c239c474b7911147399a460b78a08d",
+   "fixture": "w1_E2",
+   "stored_sha1": "2749d9b60e6da739d296d18aeec31a0490e9a36a"
+  },
+  "E2b": {
+   "L": 639,
+   "end_bit": 5110,
+   "file_sha256": "851d42b8dc49182db799d0ee573dc30531be7992944e8406d6f6fc2adabb3fdd",
+   "fixture": "w1_E2b",
+   "stored_sha1": "0ebb78f125fd9f1dc8ec2cea072433f3b6082c77"
+  },
+  "E3": {
+   "L": 598,
+   "end_bit": 4778,
+   "file_sha256": "6e3f948488c5a9ed4d0c0febdcb859738d8d28571860566ab4d0d2081ae4058f",
+   "fixture": "w1_E3",
+   "stored_sha1": "89a171193839cb0b9ec718db061295c9cb176819"
+  }
+ },
+ "file_length": 29481,
+ "fixture": "w1_minimal",
+ "flavours": {
+  "plain_le32": {
+   "file_sha256": "9e11095033b8356e7f772a2f615ceb77ba7e49b18c047f3826ac1da7a62ddbc5",
+   "fixture": "plain_le32",
+   "stored_sha1": "cb6d51c253b9d53b82b4faf653c3adc8e1a7afda"
+  },
+  "salted_be32": {
+   "file_sha256": "902d952fdce8b5830e53e96e0ad45926554e1a9e617f753f39bb58a5fd2344e4",
+   "fixture": "w1_minimal",
+   "stored_sha1": "a6183d5f5872d38b6dda0d476ea7d8c8c40641ad"
+  }
+ },
+ "headers": {
+  "hdr_campaign": {
+   "L": 628,
+   "end_bit": 5022,
+   "fixture": "hdr_campaign",
+   "header_end": 1307,
+   "stored_sha1": "e7495f21fa80a3d6f763a7ded50a1535edfce855"
+  },
+  "hdr_firefight": {
+   "L": 626,
+   "end_bit": 5004,
+   "fixture": "hdr_firefight",
+   "header_end": 1289,
+   "stored_sha1": "2db181cdbab88900a4812b2a30d6e53083b84a24"
+  },
+  "hdr_hopper": {
+   "L": 624,
+   "end_bit": 4986,
+   "fixture": "hdr_hopper",
+   "header_end": 1271,
+   "stored_sha1": "9c8723519aebc42e54a16d5c59fa26b2af1e3615"
+  },
+  "hdr_long_text": {
+   "L": 1084,
+   "end_bit": 8666,
+   "fixture": "hdr_long_text",
+   "header_end": 4951,
+   "stored_sha1": "34925a9213e04d13caf9187778b3f76a4233f343"
+  },
+  "hdr_min_text": {
+   "L": 546,
+   "end_bit": 4362,
+   "fixture": "hdr_min_text",
+   "header_end": 647,
+   "stored_sha1": "1a45c8a3b33c8e1c444409ce2e7371ebafa15b4c"
+  }
+ },
+ "quota_rows": 80,
+ "quota_table": [3050, 4970],
+ "schema": "mjolnir.w1_reference/1",
+ "section_starts": {
+  "body_fixed": 1255,
+  "end": 4970,
+  "header": 0,
+  "labels": 1626,
+  "quotas": 3050,
+  "slots": 1896
+ },
+ "slot_bits": {
+  "1": 141,
+  "5": 193,
+  "650": 172
+ },
+ "slot_ranges": {
+  "0": [1896, 1897],
+  "1": [1897, 2038],
+  "5": [2041, 2234],
+  "650": [2878, 3050]
+ },
+ "source": "docs/mvar/SPEC-mvar.md Appendix C.1 to C.4, parsed from the spec text by tests/fixturebuilder/selfcheck.py"
+}
