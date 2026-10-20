@@ -1,6 +1,51 @@
 # NOTES: macOS port of Mjolnir Forge Editor (map variant files, no game running)
 
-Working branch: `macos-mvar` (cloned from `master` of github.com/Waffle1434/Mjolnir-Forge-Editor).
+## 2026-10-19: complete Forge World support (offline verification complete)
+
+The `codex/full-forge-world` branch separates the complete 348-type browser from
+the original 194-leaf preview library. Native numeric/name metadata is generated
+by `tools/gen_object_support.py` from a read-only, hash-recorded audit outside the
+repository. No additional game assets are stored in this source repository.
+
+Verified default classes fill missing-template examples for corroborated palette
+revisions; existing imported classes and untouched slot bits remain unchanged.
+New objects receive native boundary and respawn defaults, and named locations
+preserve the `-1` none sentinel in Blender.
+
+Fresh REA/Ghidra inspection confirms class-19 eight-bit index-plus-one encoding
+and decoding. A scalar transcription of the native palette hash matches the two
+shipped 89/144-entry controls and establishes `0x8B33E8AC` for all 145 native
+entries. An added type that requires a missing row upgrades only the exported
+copy, using native row limits and the complete hash. The modern native palette
+uses its established codec even for otherwise ambiguous sentinel bit patterns.
+
+The original frozen format specification and API remain intact; the extension is
+documented in [FULL_PALETTE.md](docs/mvar/FULL_PALETTE.md). A headless real-library
+Blender check created, exported and decoded all 348 types in memory on 2026-10-19;
+the original Paradiso template's bytes were unchanged. The separate full-v04
+library supplies 348 modeled collections and 411 packed images, with native
+physical geometry and editor representations for markers and volumes. All 348
+types also round-trip on each of the five shipped Forge World templates, with
+typed fields, native budget accounting and varied 3D poses checked.
+
+Final checks: 1,268 tests on each Python 3.9 / 3.13 (zero failures/errors; three
+documented pre-existing skips each), 19 stub + 23 real Blender tests (no skips),
+full-library creation/export of all 348 types, refresh/save/reopen exact export
+preservation, legacy orientation migration and packaged startup with 348 modeled
+objects. All 348 catalog pictures and 21 labeled sheets were checked. A live
+gallery browser check was blocked by URL policy; local catalog assets were
+verified. Package hashes and the evidence matrix are in `../object-support/`.
+
+Fresh REA/Ghidra evidence establishes native 3D orientations as well as palette
+and location codecs. Static preview materials approximate game shading; invisible
+block helpers approximate editor geometry. Xbox loading, editing/resaving and
+gameplay remain unverified. The complete goal covers offline implementation and
+explicitly reports those runtime limits.
+
+Research, native source hashes, REA evidence, reports and the live implementation
+plan are in `../object-support/`. No extension was installed and no map published.
+
+Historical notes below refer to branch `macos-mvar` (cloned from `master` of github.com/Waffle1434/Mjolnir-Forge-Editor).
 This file records decisions, uncertainties and things to know. It is updated as the work proceeds.
 
 2026-10-13: this repository moved to `~/Local_Documents/Halo-MCC/forge/Mjolnir-Forge-Editor`. The protected sample folders moved with it: `rvt-test-samples` is now `Halo-MCC/variant-tool/test-samples`, `real-mvar-samples` is `Halo-MCC/forge/real-mvar-samples`, `ReachVariantTool-core-library` is `Halo-MCC/variant-tool/ReachVariantTool-core-library`, and `mjolnir-output` is `Halo-MCC/forge/maps/headstrong-star`. `io.py`, the tools, the tests and these notes use the new paths; `docs/mvar/SPEC-mvar.md` is a frozen copy and still names the old ones.

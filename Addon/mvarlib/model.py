@@ -23,8 +23,8 @@ import hashlib
 from typing import List, Optional, Tuple
 
 from . import blf as blf_mod
-from . import codecs, hashing, tables, walk as walk_mod
-from .api import Issue, MapInfo, ObjectRecord
+from . import catalog, codecs, hashing, tables, walk as walk_mod
+from .api import Issue, MapInfo, ObjectRecord, ReadOptions
 from .bitio import BitReader, BitString, BitWriter
 from .errors import CapacityError, DesyncError, InternalError, UnsupportedVariantError
 from .labels import LabelTable
@@ -109,6 +109,11 @@ class MapVariant(object):
         stream = chunk.stream
         stored = 0 if chunk.zero_length else chunk.stored_length
         strict = getattr(options, "strict", True) if options is not None else True
+        if options is None or getattr(options, 'hypothesis_filter', None) is None:
+            prefix = walk_mod.read_prefix(stream)
+            rule = catalog.read_layout(prefix.header.map_id, prefix.fixed.palette_crc, prefix.fixed.quota_count)
+            if rule is not None:
+                options = ReadOptions(strict=strict, hypothesis_filter={'type19': rule})
         try:
             hyp, res, reports = walk_mod.choose(stream, stored, chunk.version, options)
         except DesyncError:
@@ -296,7 +301,8 @@ class MapVariant(object):
             hash_flavour=hashing.flavour_label(self.flavour), palette_crc=self.fixed.palette_crc,
             max_budget_raw=self.fixed.max_budget, spent_budget_raw=self.fixed.spent_budget,
             hypothesis={"type19": self.type19_status, "axis_bits": list(self.hypothesis.axis_bits),
-                        "guid": self.hypothesis.guid, "length_class": self.length_class},
+                        "guid": self.hypothesis.guid, "length_class": self.length_class,
+                        **({'orientation_basis': 'native'} if catalog.compatible(self) else {})},
             warnings=list(self.warnings))
 
     def record_for(self, slot: Slot) -> ObjectRecord:
@@ -304,7 +310,8 @@ class MapVariant(object):
         mn_mx = self.fixed.bounds
         bits = self.hypothesis.axis_bits
         position = tuple(codecs.pos_decode(slot.pos[k], bits[k], mn_mx[2 * k], mn_mx[2 * k + 1]) for k in range(3))
-        forward, up = codecs.reconstruct_orientation(slot.up_global, slot.up_code, slot.angle)
+        reconstruct = codecs.reconstruct_native_orientation if catalog.compatible(self) else codecs.reconstruct_orientation
+        forward, up = reconstruct(slot.up_global, slot.up_code, slot.angle)
         type_id, type_name, stock = type_name_for(self.map_name, slot.folder, slot.item)
         d = [codecs.dim_decode(v) for v in slot.dims]
         width = length = top = bottom = 0.0

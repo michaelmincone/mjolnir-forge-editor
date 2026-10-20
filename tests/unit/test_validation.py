@@ -419,6 +419,36 @@ def _i_hash_zero():
     return h.export(data, h.without(h.objects_for(data), 5))
 
 
+@case('W_NATIVE_PALETTE_EXTENDED', "The template's 89 palette entries were extended to the verified 145-entry native Forge World palette. Offline round trips are checked; Xbox loading and resaving still require an in-game test.")
+def _w_native_palette_extended():
+    def prepare(spec):
+        spec['body']['quota_count'] = 89
+        spec['body']['palette_crc'] = 0x20E1C0E1
+    data = spec_variant(prepare)
+    named = h.new_object('Named area', 'Location Name', position=(1.0, 1.0, 1.0), other_a=0)
+    return h.export(data, h.objects_for(data) + [named], **h.GATE)
+
+
+def _native_budget_case(maximum):
+    def prepare(spec):
+        spec['body']['quota_count'] = 89
+        spec['body']['palette_crc'] = 0x20E1C0E1
+        spec['body']['max_budget'] = maximum
+    data = spec_variant(prepare)
+    rifle = h.new_object('Rifle', 'Assault Rifle', position=(1.0, 1.0, 1.0))
+    return h.export(data, h.objects_for(data) + [rifle], raise_quota_max=True, **h.GATE)
+
+
+@case('I_NATIVE_BUDGET', 'Spent budget recalculated from the verified native stock prices: 30 of 30000.')
+def _i_native_budget():
+    return _native_budget_case(30000)
+
+
+@case('W_NATIVE_BUDGET_EXCEEDED', "Native stock prices total 30; this variant's budget is 1. The file can be encoded, but over-budget editing and resaving need an in-game test.")
+def _w_native_budget_exceeded():
+    return _native_budget_case(1)
+
+
 class TestEveryCode(unittest.TestCase):
     def test_each_code_is_raised_with_its_exact_message(self):
         for code, message, fn in CASES:
@@ -455,6 +485,8 @@ def spec_tables():
     """``{code: (severity, pattern)}`` read from the tables of SPEC 7.3 and 5.8."""
     with open(os.path.join(REPO, "docs", "mvar", "SPEC-mvar.md"), "r", encoding="utf-8") as fh:
         text = fh.read()
+    with open(os.path.join(REPO, "docs", "mvar", "FULL_PALETTE.md"), "r", encoding="utf-8") as fh:
+        text += '\n' + fh.read()
     out = {}
     for line in text.split("\n"):
         m = re.match(r"^\| `([EWI]_[A-Z0-9_]+)` \| (error|warning|info) \|", line)

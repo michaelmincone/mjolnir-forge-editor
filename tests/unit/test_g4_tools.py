@@ -114,6 +114,23 @@ class TestBuildPackage(unittest.TestCase):
             self.assertFalse([n for n in names if n.endswith((".dll", ".blend", ".pyc", ".mvar", ".bin"))], names)
             self.assertNotIn("parse_palette.py", names)
 
+    def test_external_preview_library_is_staged_without_modifying_either_source(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            source = os.path.join(tmp, 'external.blend')
+            payload = b'Synthetic preview-library stand-in; not a game asset'
+            with open(source, 'wb') as stream:
+                stream.write(payload)
+            dest = os.path.join(tmp, 'stage')
+            bp.stage(dest, with_library=True, library_path=source)
+            with open(os.path.join(dest, bp.LIBRARY_REL), 'rb') as stream:
+                self.assertEqual(stream.read(), payload)
+            with open(source, 'rb') as stream:
+                self.assertEqual(stream.read(), payload)
+            with open(os.path.join(dest, bp.LIBRARY_REL), 'wb') as stream:
+                stream.write(b'Changed staged stand-in')
+            with open(source, 'rb') as stream:
+                self.assertEqual(stream.read(), payload, 'The staged library must not alias mutable source bytes')
+
     def test_zip_inspection_finds_every_forbidden_member(self):
         with tempfile.TemporaryDirectory() as tmp:
             clean = os.path.join(tmp, "clean.zip")

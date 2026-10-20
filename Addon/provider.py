@@ -64,6 +64,46 @@ def object_folder(map_name, name):
     return None if object_id is None else (int(object_id) >> 8)
 
 
+def _default_catalog():
+    if __package__:
+        from .mvarlib import catalog
+    else:
+        from mvarlib import catalog
+    return catalog
+
+
+def browser_tree():
+    """Optional complete browser; injected providers retain their own palette contract."""
+    active = get_provider()
+    supplied = getattr(active, 'browser_tree', None)
+    if supplied is not None:
+        return supplied()
+    tree = active.palette_tree()
+    return _default_catalog().browser_tree(tree) if active is _default_provider() else tree
+
+
+def new_object_defaults(map_name, name, template=None):
+    active = get_provider()
+    supplied = getattr(active, 'new_object_defaults', None)
+    if supplied is not None:
+        return supplied(map_name, name, template)
+    if active is _default_provider():
+        return _default_catalog().new_object_defaults(map_name, name, template)
+    return None
+
+
+def available_palette_count(template):
+    if template is not None and get_provider() is _default_provider():
+        return _default_catalog().available_palette_count(template)
+    return None
+
+
+def imported_native_orientation(template, slot_index, raw, raw_bits):
+    if get_provider() is _default_provider():
+        return _default_catalog().imported_native_orientation(template, slot_index, raw, raw_bits)
+    return None
+
+
 def missing_names(candidate):
     """Names of ``REQUIRED_NAMES`` that ``candidate`` does not carry."""
     return [n for n in REQUIRED_NAMES if not hasattr(candidate, n)]

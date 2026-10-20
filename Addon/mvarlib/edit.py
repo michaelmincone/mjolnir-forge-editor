@@ -28,13 +28,14 @@ Pure Python 3.9 to 3.13, standard library only, relative imports only.
 import math
 from typing import Sequence
 
-from . import codecs, hashing, tables
+from . import catalog, codecs, hashing, tables
 from . import validate as V
 from .api import DiffEntry, ExportResult, ReadOptions
 from .errors import EncodeError, InternalError, MvarError
 from .model import MapVariant, type_name_for
+from .bitio import BitWriter
 from .slot import SLOT_COUNT, Slot
-from .walk import QUOTA_ROW_BITS, STREAM_BITS
+from .walk import Hypothesis, Quota, QUOTA_ROW_BITS, STREAM_BITS
 
 __all__ = ["export_map_variant", "learn_class", "learn_example", "planned_end_bits"]
 
@@ -203,12 +204,17 @@ class _Export(object):
         self._global_checks()
         self._validate_fields()
         keepers, new_objects, deleted, not_imported = self._identity()
+        retargets = [obj for index, obj in keepers.items()
+                     if (obj.type_name and obj.type_name != self.m.record_for(self.m.slots[index]).type_name)
+                     or (not obj.type_name and V.to_int(obj.type_id_hint) not in (-1, self.m.record_for(self.m.slots[index]).type_id))]
+        self._prepare_native_palette(list(new_objects) + retargets)
         for index in sorted(keepers):
             self._plan_existing(index, keepers[index])
         self._plan_deleted(deleted)
         self._plan_new(new_objects, deleted)
         self._plan_not_imported(not_imported)
         self._plan_quotas()
+        self._update_native_budget()
         self._check_shape()
         self._check_limit(new_objects, deleted)
         self._check_capacity()
@@ -223,6 +229,65 @@ class _Export(object):
             self._append_notes()
             return ExportResult(False, None, self._diff_sorted(), errors, self.warnings, self.stats)
         return self._finish()
+
+    def _prepare_native_palette(self, requested):
+        """Extend verified legacy palettes only when an added/retargeted type needs it.
+
+        Original files and imported slot bytes remain untouched. The full palette
+        CRC and class-19 codec come from the same shipped cache/DLL revision.
+        """
+        native = catalog.native_palette(self.m)
+        if native is None:
+            return
+        definitions = []
+        for obj in requested:
+            key = obj.type_name if obj.type_name else V.to_int(obj.type_id_hint)
+            row = catalog.definition(self.map_name, key)
+            if row is not None and id(obj) not in self.bad:
+                definitions.append(row)
+        p = self.p
+        if any(row['id'] >> 8 >= self.m.fixed.quota_count for row in definitions):
+            old_count = p.fixed.quota_count
+            p.quotas.extend(Quota(0, native['maxima'][folder], 0)
+                            for folder in range(old_count, native['count']))
+            p.fixed.quota_count = native['count']
+            p.fixed.palette_crc = native['crc']
+            p.fixed.max_budget = native['budget']
+            self._refresh_fixed()
+            self.stats['native_palette_extension'] = dict(before=old_count, after=native['count'], crc=native['crc'])
+            self.warnings.append(V.make('W_NATIVE_PALETTE_EXTENDED', old_count, native['count']))
+        if self.m.type19_status == 'undetermined' and any(row['cached_type'] == 19 for row in definitions):
+            p.hypothesis = Hypothesis(native['type19'], p.hypothesis.axis_bits, p.hypothesis.guid)
+            p.type19_status = native['type19']
+            self.stats['native_location_codec'] = native['type19']
+
+    def _refresh_fixed(self):
+        fixed = self.p.fixed
+        w = BitWriter()
+        for field, bits in fixed.FIELDS:
+            w.write(getattr(fixed, field), bits)
+        for value in fixed.bounds_raw:
+            w.write(value, 32)
+        w.write(fixed.max_budget, 32)
+        w.write(fixed.spent_budget, 32)
+        fixed.raw = w.getbits()
+
+    def _update_native_budget(self):
+        if not catalog.compatible(self.m) or not self._content_dirty():
+            return
+        spent = 0
+        for slot in self.p.present_slots():
+            if slot.folder is None or slot.item is None:
+                return
+            definition = catalog.definition(self.map_name, (slot.folder << 8) | slot.item)
+            if definition is None:
+                return
+            spent += definition['price']
+        self.p.fixed.spent_budget = spent
+        self._refresh_fixed()
+        self.stats['native_budget'] = dict(spent=spent, maximum=self.p.fixed.max_budget)
+        if spent > self.p.fixed.max_budget:
+            self.warnings.append(V.make('W_NATIVE_BUDGET_EXCEEDED', spent, self.p.fixed.max_budget))
 
     # --- step 1 ------------------------------------------------------------------------------
     def _parse_template(self):
@@ -389,14 +454,19 @@ class _Export(object):
                  object_name=obj.name)
 
     def _yaw_angle(self, obj):
-        """The raw 14-bit angle to write for a changed or new orientation, or ``None`` after recording why not (4.8)."""
+        """Stored orientation triple, with native tilt support for corroborated palettes."""
+        if catalog.compatible(self.m):
+            if not self.options.allow_unverified_rotation:
+                self.err(self.errors_object, "E_ROTATION_GATED", obj.name, object_name=obj.name)
+                return None
+            return codecs.orientation_encode_native(obj.forward, obj.up)
         if V.angle_between(obj.up, UP_Z) > V.ANG_TOL or V.yaw_of(obj.forward) is None:
             self.err(self.errors_object, "E_TILT_UNSUPPORTED", obj.name, object_name=obj.name)
             return None
         if not self.options.allow_unverified_rotation:
             self.err(self.errors_object, "E_ROTATION_GATED", obj.name, object_name=obj.name)
             return None
-        return codecs.angle_encode(V.yaw_of(obj.forward))
+        return 1, None, codecs.angle_encode(V.yaw_of(obj.forward))
 
     @staticmethod
     def _dims_codes(obj, shape):
@@ -409,13 +479,13 @@ class _Export(object):
         if 12 <= cached_type <= 14:
             return [a, b]
         if cached_type == 19:
-            if self.m.hypothesis.type19 == "plain8":
+            if self.p.hypothesis.type19 == "plain8":
                 return [a + 1]
             return [1, 0] if a == -1 else [0, a]
         return []
 
     def _type19_ok(self, obj):
-        if self.m.type19_status == "undetermined":
+        if self.p.type19_status == "undetermined":
             self.err(self.errors_object, "E_TYPE19_UNDETERMINED", object_name=obj.name)
             return False
         return True
@@ -435,11 +505,18 @@ class _Export(object):
         return not (new_team == base_team or (base_team == -1 and new_team == codecs.TEAM_NEUTRAL))
 
     # --- classes and types (7.4) -------------------------------------------------------------
-    def _class_for(self, folder, item, type_name):
+    def _class_for(self, folder, item, type_name, requested_class=None):
         """``(class or None, assumed)`` of a type: learned from the template, else assumed from the palette group."""
+        native = catalog.native_class(self.m, folder, item)
+        if native is not None and V.to_int(requested_class) == native:
+            self.stats.setdefault('native_object_definitions', []).append(type_name)
+            return native, False
         learned = learn_class(self.m, folder, item)
         if learned is not None:
             return learned, False
+        if native is not None:
+            self.stats.setdefault('native_object_definitions', []).append(type_name)
+            return native, False
         if self._assumed_group(type_name):
             return 0, True
         return None, False
@@ -509,8 +586,8 @@ class _Export(object):
             self._kept_type_is_stock(index, obj, rec)
         elif kind == RETARGET:
             folder, item = resolved >> 8, resolved & 0xFF
-            if folder >= m.fixed.quota_count:
-                self.err(self.errors_object, "E_FOLDER_RANGE", name, folder, m.fixed.quota_count, object_name=name)
+            if folder >= self.p.fixed.quota_count:
+                self.err(self.errors_object, "E_FOLDER_RANGE", name, folder, self.p.fixed.quota_count, object_name=name)
             else:
                 new_name = self._type_name(folder, item)
                 learned, assumed = self._class_for(folder, item, new_name)
@@ -525,9 +602,18 @@ class _Export(object):
                     retarget = (slot.folder, folder)
                     new_id = resolved
 
-        # --- the object class cannot change ---
-        if V.to_int(obj.cached_type) != slot.cached_type:
-            self.err(self.errors_object, "E_CACHED_TYPE_CHANGED", name, object_name=name)
+        # Legacy class-zero records may explicitly enable their verified stock
+        # properties. Unchanged imports and arbitrary class changes stay guarded.
+        effective_class = slot.cached_type
+        requested_class = V.to_int(obj.cached_type)
+        if requested_class != slot.cached_type:
+            native = catalog.native_class(m, slot.folder, slot.item) if kind == KEEP else None
+            if slot.cached_type == 0 and native is not None and requested_class == native:
+                effective_class = native
+                changes['cached_type'] = native
+                self.stats.setdefault('native_property_upgrades', []).append(name)
+            else:
+                self.err(self.errors_object, "E_CACHED_TYPE_CHANGED", name, object_name=name)
 
         # --- position (4.2) ---
         cells, outside = self._cell_changes(obj, rec.position)
@@ -544,7 +630,7 @@ class _Export(object):
         if not V.orientation_unchanged(obj, rec.forward, rec.up):
             angle = self._yaw_angle(obj)
             if angle is not None:
-                changes["up_global"], changes["up_code"], changes["angle"] = 1, None, angle
+                changes["up_global"], changes["up_code"], changes["angle"] = angle
                 wrote_rotation = True
 
         # --- shape and dimensions (4.3) ---
@@ -578,12 +664,13 @@ class _Export(object):
 
         # --- other_a / other_b (3.8) ---
         a, b = V.to_int(obj.other_a), V.to_int(obj.other_b)
-        if (a, b) != (rec.other_a, rec.other_b):
-            problems = V.check_other(obj, slot.cached_type, m.hypothesis.type19, (rec.other_a, rec.other_b))
+        if (a, b) != (rec.other_a, rec.other_b) or effective_class != slot.cached_type:
+            problems = V.check_other(obj, effective_class, self.p.hypothesis.type19,
+                                     (rec.other_a, rec.other_b) if effective_class == slot.cached_type else None)
             if problems:
                 self.errors_object.extend(problems)
-            elif slot.cached_type != 19 or self._type19_ok(obj):
-                changes["extra"] = self._extra_for(slot.cached_type, a, b)
+            elif effective_class != 19 or self._type19_ok(obj):
+                changes["extra"] = self._extra_for(effective_class, a, b)
 
         # a retarget moves one object between two quota rows whatever else is wrong with the object
         if retarget is not None and retarget[0] != retarget[1]:
@@ -599,7 +686,7 @@ class _Export(object):
             setattr(target, attr, value)
         if wrote_rotation:
             self.rotation_written += 1
-        self.processed.append((obj, index, new_id, None, wrote_rotation))
+        self.processed.append((obj, index, new_id, effective_class, wrote_rotation))
         self._diff_existing(index, name, target, obj, rec)
 
     def _diff_existing(self, index, name, target, obj, rec):
@@ -682,12 +769,12 @@ class _Export(object):
         type_name = ""
         if type_id is not None:
             folder, item = type_id >> 8, type_id & 0xFF
-            if folder >= m.fixed.quota_count:
-                self.err(self.errors_object, "E_FOLDER_RANGE", name, folder, m.fixed.quota_count, object_name=name)
+            if folder >= self.p.fixed.quota_count:
+                self.err(self.errors_object, "E_FOLDER_RANGE", name, folder, self.p.fixed.quota_count, object_name=name)
                 folder = None
         if folder is not None:
             type_name = self._type_name(folder, item)
-            cached, assumed = self._class_for(folder, item, type_name)
+            cached, assumed = self._class_for(folder, item, type_name, obj.cached_type)
             if cached is None:
                 if V.to_int(obj.cached_type) == 19 and m.type19_status == "undetermined":
                     self.err(self.errors_object, "E_TYPE19_UNDETERMINED", object_name=name)
@@ -715,7 +802,7 @@ class _Export(object):
         # --- extras ---
         extra = []
         if cached is not None:
-            problems = V.check_other(obj, cached, m.hypothesis.type19, None)
+            problems = V.check_other(obj, cached, self.p.hypothesis.type19, None)
             if problems:
                 self.errors_object.extend(problems)
             elif cached != 19 or self._type19_ok(obj):
@@ -727,7 +814,7 @@ class _Export(object):
         s.folder, s.item = folder, item
         s.in_bounds = 1
         s.pos = [cells[0], cells[1], cells[2]]
-        s.up_global, s.up_code, s.angle = 1, None, angle
+        s.up_global, s.up_code, s.angle = angle
         s.parent_raw = 0
         shape = V.to_int(obj.shape)
         s.shape = shape
@@ -755,9 +842,9 @@ class _Export(object):
         raise_max = bool(self.options.raise_quota_max)
         for folder in sorted(self.quota_delta):
             delta = self.quota_delta[folder]
-            if delta == 0 or folder >= len(m.quotas):
+            if delta == 0 or folder >= len(p.quotas):
                 continue
-            row = m.quotas[folder]
+            row = m.quotas[folder] if folder < len(m.quotas) else p.quotas[folder]
             new = row.placed + delta
             name = self._palette_name(folder)
             problem, new_max = V.quota_decision(row.placed, new, row.minimum, row.maximum, raise_max)
@@ -775,7 +862,8 @@ class _Export(object):
 
     def _quota_changes(self):
         out = []
-        for folder, (before, after) in enumerate(zip(self.m.quotas, self.p.quotas)):
+        for folder, after in enumerate(self.p.quotas):
+            before = self.m.quotas[folder] if folder < len(self.m.quotas) else Quota(0, 0, 0)
             if before.as_tuple() != after.as_tuple():
                 out.append({"folder": folder, "name": self._palette_name(folder), "minimum": before.minimum,
                             "placed_before": before.placed, "placed_after": after.placed,
@@ -837,7 +925,11 @@ class _Export(object):
         return list(self.diff)
 
     def _append_notes(self):
-        self.warnings.append(V.make("I_BUDGET"))
+        budget = self.stats.get('native_budget')
+        if budget:
+            self.warnings.append(V.make('I_NATIVE_BUDGET', budget['spent'], budget['maximum']))
+        else:
+            self.warnings.append(V.make("I_BUDGET"))
         self.warnings.append(V.make("I_PALETTE", self.m.fixed.palette_crc))
         self.warnings.append(V.make("I_UNVERIFIED"))
 
@@ -876,7 +968,7 @@ class _Export(object):
 
         if again.hypothesis != hyp:
             fail("the layout hypothesis changed")
-        if not _same_except_file_length(m.header.raw, again.header.raw) or again.fixed.raw != m.fixed.raw \
+        if not _same_except_file_length(m.header.raw, again.header.raw) or again.fixed.raw != p.fixed.raw \
                 or again.labels.raw != m.labels.raw or again.guid != m.guid:
             fail("a part of the stream that is never edited changed")
         if [q.as_tuple() for q in again.quotas] != [q.as_tuple() for q in p.quotas]:
@@ -922,11 +1014,15 @@ class _Export(object):
         if cached is not None and rec.cached_type != cached:
             return "class %d, expected %d" % (rec.cached_type, cached)
         if rotated:
-            wanted = V.yaw_of(obj.forward)
-            got = V.yaw_of(rec.forward)
-            delta = abs((got - wanted + math.pi) % (2 * math.pi) - math.pi)
-            if rec.orientation_kind != "vertical" or delta > codecs.ANGLE_STEP + 1e-9:
-                return "rotation does not match the requested yaw"
+            if catalog.compatible(self.m):
+                if V.angle_between(rec.up, obj.up) > 0.006 or V.angle_between(rec.forward, obj.forward) > 0.006:
+                    return 'rotation does not match the requested native pose'
+            else:
+                wanted = V.yaw_of(obj.forward)
+                got = V.yaw_of(rec.forward)
+                delta = abs((got - wanted + math.pi) % (2 * math.pi) - math.pi)
+                if rec.orientation_kind != "vertical" or delta > codecs.ANGLE_STEP + 1e-9:
+                    return "rotation does not match the requested yaw"
         pairs = (("spawn_sequence", rec.spawn_sequence, obj.spawn_sequence), ("spawn_time", rec.spawn_time, obj.spawn_time),
                  ("label_index", rec.label_index, obj.label_index), ("color", rec.color, obj.color),
                  ("shape", rec.shape, obj.shape), ("symmetry", rec.symmetry, obj.symmetry),

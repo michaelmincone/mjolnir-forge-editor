@@ -4,6 +4,27 @@ A Blender add-on for building Halo: Reach Forge maps on a Mac. It opens a Forge 
 
 This is a Mac port of [Mjolnir Forge Editor](https://github.com/Waffle1434/Mjolnir-Forge-Editor) by Waffle1434. The original edits a running copy of Halo: Reach on a Windows PC through a DLL; this version reads and writes map files instead.
 
+## Full Forge World palette (1.1)
+
+The object browser now includes all **348 stock Forge World types**, independently
+of whether the selected preview library contains their models. Verified native
+definitions provide creation properties, specialized controls and palette extension
+for all five shipped Forge World templates. Named-location indices and native
+budget accounting are supported. Existing imports remain unchanged unless edited.
+
+The separately generated full-palette library supplies previews for every type:
+native models for physical objects and editor models for markers and volumes.
+Choose that `Halo Reach.blend` in **Library path**. Use **Refresh Object Previews**
+to update an already-open project while keeping its placements and Forge settings.
+A legacy imported weapon can use **Enable Weapon Settings** to expose spare clips.
+
+The [full-palette format amendment](docs/mvar/FULL_PALETTE.md) records native
+evidence and behavior. The local implementation plan, model extraction, visual
+catalog and verification reports are in `../object-support/` and
+`../object-catalog/`. Previews are static; game animation, screen effects and
+physics are not simulated. Offline verification does not establish Xbox runtime
+behavior. No extension is installed or map published by these build tools.
+
 ## What it does
 
 - **File > Import > Halo Reach Map Variant (.mvar)** brings every object on the map into Blender.
@@ -41,7 +62,7 @@ cd mjolnir-forge-editor
 python3 tools/build_package.py --out ~/Desktop/mjolnir-addon --allow-placeholders
 ```
 
-1. In Blender, open **Edit > Preferences > Get Extensions**, choose **Install from Disk...** from the menu at the top right, pick `~/Desktop/mjolnir-addon/mjolnir_forge-1.0.0.zip`, and enable it.
+1. In Blender, open **Edit > Preferences > Get Extensions**, choose **Install from Disk...** from the menu at the top right, pick `~/Desktop/mjolnir-addon/mjolnir_forge-1.1.0.zip`, and enable it.
 2. In the add-on's preferences, set **Library path** to `Addon/Resources/Halo Reach.blend` in this repo. That file holds the object models; without it, objects import as empties.
 3. Use **File > Import** and **File > Export** as described above.
 

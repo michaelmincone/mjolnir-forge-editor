@@ -239,9 +239,10 @@ def run_real(env):
     with bl_common.patched(env.palette, "bpy", Exploding()):
         root, subs = all_menu_entries(env)
     check_eq(root.texts(), [env.palette.NO_FILTER_NOTE], "note about filtering")
-    check_eq([m[2] for m in root.menus()], ["Structure", "Scenery", "Gadgets", "Spawning", "Objectives", "Hidden"], "top-level groups")
+    check_eq([m[2] for m in root.menus()], ["Structure", "Scenery", "Gadgets", "Spawning", "Objectives", "Hidden",
+                                          "Weapons, Human", "Weapons, Covenant", "Armor Abilities", "Vehicles", "More"], "top-level groups")
     names = leaf_names(subs)
-    check_eq((len(names), len(set(names))), (194, 194), "leaves reachable through the submenus")
+    check_eq((len(names), len(set(names))), (348, 348), "leaves reachable through the submenus")
     check_eq(set(names) - set(P.stock_object_names("Forge World")), set(), "every leaf is a Forge World object")
     leaves = tree_leaves(env)
     icons = bl_common.icon_names()
@@ -251,7 +252,7 @@ def run_real(env):
     result, _ = env.import_bytes(map_fixture(rd.FORGE_WORLD, 145, "b04_fw145"), "b04_fw145.mvar")
     check_eq(result, {'FINISHED'})
     root_fw, fw = offered(env, scene)
-    check_eq(len(fw), 194, "Forge World with 145 entries shows every leaf")
+    check_eq(len(fw), 348, "Forge World with 145 entries shows every stock definition")
     check_eq(root_fw.texts(), [], "no note: nothing was left out")
 
     # --- W1 as it is: 80 palette entries, so 41 Forge World leaves with a folder of 80 or more are not offered ----------------------------
@@ -259,7 +260,7 @@ def run_real(env):
     result, _ = env.import_bytes(rd.fixture("w1_minimal"), "b04_w1.mvar")
     check_eq(result, {'FINISHED'})
     root_80, fw80 = offered(env, scene)
-    check_eq(len(fw80), 194 - 41, "W1 (80 palette entries): the 41 leaves of entries 80 and beyond are not offered")
+    check_eq(len(fw80), 228, "W1 (80 palette entries): stock definitions beyond the template range are not offered")
     check_eq(root_80.texts(), [env.palette.QUOTA_NOTE % 80], "the note says why")
     for gone in ("Block, 2x2x2, Invisible", "Dumpster", "Bridge", "Door (MCC)", "Vending Machine", "Ammo Cabinet"):
         check(gone in leaves and gone not in fw80, "%r is hidden with 80 entries" % gone)
@@ -295,7 +296,7 @@ def run_real(env):
     check_eq(result, {'FINISHED'})
     root_unknown, unknown = offered(env, scene)
     check_eq(root_unknown.texts(), [env.palette.UNKNOWN_MAP_NOTE])
-    check_eq(len(unknown), 194)
+    check_eq(len(unknown), 348)
 
     # --- the real file: Breakneck defines 82 palette entries -----------------------------------------------------------------------------------
     if rd.real_available():
@@ -307,10 +308,10 @@ def run_real(env):
         expected = set(n for n in leaves & stock if env.provider.object_folder("Breakneck", n) < 82)
         check_eq(bk, expected, "Breakneck: stock leaves with a palette entry below 82")
         beyond = (leaves & stock) - expected
-        check_eq(sorted(beyond), ["Ammo Cabinet", "Door", "Dumpster", "Dumpster, Tall", "Heavy Barrier", "Wall (MCC)"],
-                 "the leaves of entries 82 and beyond that the file cannot hold")
+        check_eq(len(beyond), 44, "the complete browser retains all out-of-range definitions in its filter accounting")
+        check({"Ammo Cabinet", "Door", "Dumpster", "Dumpster, Tall", "Heavy Barrier", "Wall (MCC)"} <= beyond)
         check_eq(root_bk.texts(), [env.palette.QUOTA_NOTE % 82])
-        check_eq(len(bk), 106)
+        check_eq(len(bk), 173)
         for name in beyond:
             bl_common.check_raises(TypeError, bpy.ops.forge.add_object, objectType=name)
         # an offered entry can be added, and the lazy link works on the real file as well
@@ -328,7 +329,7 @@ def run_real(env):
     check(obj.get("isForgeObject") and obj.instance_collection is None and obj.empty_display_type == 'ARROWS', "no library: arrow empty")
     check_eq(obj.get("mj_type_name"), "Block, 1x1", "the chosen type is remembered without a model")
     check("mj_slot" not in obj, "a new object claims no slot")
-    check_eq(obj.forge.objectType, -1)
+    check_eq(obj.forge.objectType, 0x4600)
     env.use_library()
     check_eq(len(bpy.data.libraries), 0, "not linked before use")
     check_eq(bpy.ops.forge.add_object(objectType="Block, 1x1"), {'FINISHED'})

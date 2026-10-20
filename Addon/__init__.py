@@ -17,7 +17,7 @@ bl_info = {
     "author": "Waffle1434",
     "description": "Import and export Halo: Reach map variants (.mvar).",
     "blender": (5, 2, 0),
-    "version": (1, 0, 0),
+    "version": (1, 1, 0),
     "location": "File > Import / Export, Add > Forge Object",
     "warning": "",
     "category": "Import-Export",

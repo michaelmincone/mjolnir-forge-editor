@@ -1036,14 +1036,15 @@ class TestAssortedRules(unittest.TestCase):
             self.assertEqual(slot["team_raw"], raw, team)
 
     def test_the_type_19_guard_refuses_while_the_rule_is_undetermined(self):
-        """Unreachable through the public call (an undetermined file has no class-19 object to learn or edit), so tested directly."""
+        """An unknown planned rule is refused; native evidence can resolve the plan without changing the template."""
         import types
         ex = edit._Export(b"", [], api.ExportOptions())
         obj = h.new_object("N")
         ex.m = types.SimpleNamespace(type19_status="undetermined")
+        ex.p = types.SimpleNamespace(type19_status="undetermined")
         self.assertFalse(ex._type19_ok(obj))
         self.assertEqual([e.code for e in ex.errors_object], ["E_TYPE19_UNDETERMINED"])
-        ex.m = types.SimpleNamespace(type19_status="plain8")
+        ex.p = types.SimpleNamespace(type19_status="plain8")
         self.assertTrue(ex._type19_ok(obj))
         self.assertEqual(len(ex.errors_object), 1)
 

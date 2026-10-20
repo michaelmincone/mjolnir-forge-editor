@@ -6,10 +6,10 @@
   (``Forge World Palette`` and ``Shape Models``), read in place and never copied.
 * **Names, not full names.** A linked collection's ``.name`` is ``Block, 1x1`` while ``.name_full`` is
   ``Block, 1x1 [Halo Reach.blend]``; the glue only ever uses ``.name`` (:func:`find_collection`).
-* **Static tree.** The Add menu is drawn from ``mvarlib/data/palette_tree.json`` (names only, generated
-  by ``tools/gen_palette_tree.py``) read through the provider, so drawing never touches ``bpy.data``
-  and cannot raise ``KeyError`` before the library exists. A leaf is shown iff its display name is a
-  stock object of the map of the scene's template (the per-map filter).
+* **Complete browser.** The provider merges the original model-library tree with the complete native
+  object catalog. Drawing never touches ``bpy.data`` and does not depend on a model being present.
+  The per-map filter keeps stock names; verified Forge World templates can extend their quota table
+  to the full native palette when a newly requested type requires it.
 * **Relink.** A ``load_post`` handler repairs the path of a missing ``Halo Reach.blend`` link (for an
   extension the path contains a per-Blender-version profile directory that an upgrade strands).
 * **Icons.** A hand-written name -> icon map (the stored numeric ``forge.icon`` indices of the library
@@ -58,6 +58,12 @@ GROUP_ICONS = {
     "Objectives": "BOOKMARKS",
     "Hidden": "HIDE_ON",
     "Invisible": "GHOST_ENABLED",
+    "Weapons, Human": "OUTLINER_OB_ARMATURE",
+    "Weapons, Covenant": "OUTLINER_OB_ARMATURE",
+    "Armor Abilities": "FORCE_FORCE",
+    "Vehicles": "AUTO",
+    "More": "COLLECTION_NEW",
+    "MCC Additions": "COLLECTION_NEW",
 }
 
 NO_FILTER_NOTE = "Import a map variant to filter by map"
@@ -102,32 +108,44 @@ def _is_palette_library(collection):
     return lib is not None and os.path.basename(lib.filepath.replace("\\", "/")) == LIBRARY_BASENAME
 
 
+def _library_key(collection):
+    return (os.path.realpath(bpy.path.abspath(collection.library.filepath))
+            if collection.library is not None else None)
+
+
+def _library_score(collection, preferred):
+    if collection.library is None:
+        return 1
+    if _library_key(collection) == preferred:
+        return 3
+    return 2 if _is_palette_library(collection) else 0
+
+
 def find_collection(name):
     """The palette collection called ``name``: a linked one from ``Halo Reach.blend`` first, else a local one.
 
     Never ``bpy.data.collections[name]`` (a name can exist twice, linked and local).
     """
-    local = None
+    best, score = None, 0
+    preferred = os.path.realpath(library_path())
     for coll in bpy.data.collections:
         if coll.name != name:
             continue
-        if _is_palette_library(coll):
-            return coll
-        if coll.library is None and local is None:
-            local = coll
-    return local
+        candidate = _library_score(coll, preferred)
+        if candidate > score:
+            best, score = coll, candidate
+    return best
 
 
 def collection_index():
     """``{name: collection}`` with the same preference as :func:`find_collection` (one pass, for batch imports)."""
-    linked, local = {}, {}
+    found, scores = {}, {}
+    preferred = os.path.realpath(library_path())
     for coll in bpy.data.collections:
-        if _is_palette_library(coll):
-            linked.setdefault(coll.name, coll)
-        elif coll.library is None:
-            local.setdefault(coll.name, coll)
-    local.update(linked)
-    return local
+        score = _library_score(coll, preferred)
+        if score > scores.get(coll.name, 0):
+            found[coll.name], scores[coll.name] = coll, score
+    return found
 
 
 def ensure_palette():
@@ -136,10 +154,15 @@ def ensure_palette():
     Called only from operators. Linking needs the file named by :func:`library_path`; without it this
     returns False and the caller falls back to arrow empties (import reports a WARNING).
     """
-    missing = [n for n in WANTED if find_collection(n) is None]
+    path = library_path()
+    if path and os.path.isfile(path):
+        preferred = os.path.realpath(path)
+        missing = [n for n in WANTED if not any(col.name == n and _library_key(col) == preferred
+                                               for col in bpy.data.collections)]
+    else:
+        missing = [n for n in WANTED if find_collection(n) is None]
     if not missing:
         return True
-    path = library_path()
     if path and os.path.isfile(path):
         try:
             with bpy.data.libraries.load(path, link=True, relative=False) as (data_from, data_to):
@@ -189,6 +212,7 @@ class MjolnirPreferences(AddonPreferences):
     def draw(self, context):
         layout = self.layout
         layout.prop(self, "library_path")
+        layout.operator('forge.refresh_previews', text='Refresh Object Previews')
         path = library_path()
         if os.path.isfile(path):
             layout.label(text="Library found: %s" % path, icon='CHECKMARK')
@@ -222,7 +246,7 @@ def _load_tree():
     P = provider.get_provider()
     if _cache["provider"] is P and _cache["tree"] is not None:
         return _cache
-    tree = P.palette_tree()
+    tree = provider.browser_tree()
     groups = []                                  # [(node, icon)] in preorder, root excluded; index = menu number
     leaves = []                                  # [(name, icon)] in tree order (groups first, then leaves)
 
@@ -316,6 +340,11 @@ def visible_names(scene):
     if not names:
         return None, UNKNOWN_MAP_NOTE
     quota_count = state.quota_count(scene)
+    native_count = provider.available_palette_count(state.template_bytes(scene))
+    if native_count is not None and native_count > quota_count:
+        within, _hid = names_within_quota(map_name, names, native_count)
+        return within, ("Export can extend this template's %d entries to the full %d-entry native palette"
+                        % (quota_count, native_count))
     within, hid = names_within_quota(map_name, names, quota_count)
     return within, (QUOTA_NOTE % quota_count if hid else None)
 

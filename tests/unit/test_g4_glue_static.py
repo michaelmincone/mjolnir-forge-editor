@@ -131,6 +131,9 @@ class TestGlueStatic(unittest.TestCase):
         self.assertIsNotNone(icons)
         with open(os.path.join(ADDON, "mvarlib", "data", "palette_tree.json"), "r", encoding="utf-8") as fh:
             tree = json.load(fh)
+        sys.path.insert(0, ADDON)
+        from mvarlib.catalog import browser_tree
+        tree = browser_tree(tree)
         names = []
 
         def walk(node):
@@ -139,7 +142,7 @@ class TestGlueStatic(unittest.TestCase):
                 walk(group)
 
         walk(tree)
-        self.assertEqual(len(names), 23)
+        self.assertEqual(len(names), 32)
         self.assertEqual(sorted(set(names) - set(icons)), [], "groups without an icon")
         self.assertEqual(sorted(set(icons) - set(names)), [], "icons for groups that do not exist")
         for icon in icons.values():

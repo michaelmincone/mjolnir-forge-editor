@@ -1,6 +1,6 @@
 schema_version = "1.0.0"
 id = "mjolnir_forge"
-version = "1.0.0"
+version = "1.1.0"
 name = "Halo: Mjolnir Forge Editor"
 tagline = "Import and export Halo: Reach map variants"
 maintainer = "OWNER NAME <owner@example.com>"      # to be filled by the owner; tools/build_package.py refuses to build while it holds a placeholder

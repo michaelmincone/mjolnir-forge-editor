@@ -27,9 +27,9 @@ from bpy.props import (BoolProperty, EnumProperty, FloatProperty, FloatVectorPro
 from bpy.types import Operator
 from mathutils import Euler, Matrix, Vector
 
-from . import palette, state
+from . import palette, provider, state
 
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 MAX_OBJECTS = 650
 ANVIL_SCALING = True
 
@@ -292,6 +292,11 @@ def _upd_shape(self, context):
         update_shape(self.id_data)
 
 
+def _upd_other_info(self, context):
+    if not _updates_suspended() and self.cachedType != 19 and self.otherInfoA < 0:
+        self.otherInfoA = 0
+
+
 # --- the gametype label enum (8.7 #8) -----------------------------------------------------------
 _label_cache = {"key": None, "items": [(state.NO_LABEL, "No Label", "Default", 'NONE', 0)]}
 
@@ -339,7 +344,7 @@ class ForgeObjectProps(bpy.types.PropertyGroup):
     cachedType: IntProperty(min=0, max=31)
     gtLabel: EnumProperty(name="Game Type Label", description="How the gametype interprets this object",
                           items=_label_items, default=0, update=_upd_scale)
-    otherInfoA: IntProperty(min=0, max=255)
+    otherInfoA: IntProperty(min=-1, max=255, update=_upd_other_info)
     otherInfoB: IntProperty(min=0, max=255)
 
     physics: EnumProperty(name="Physics", description="Physics mode", default='PHASED', items=[
@@ -462,6 +467,27 @@ def create_forge_object(context, item_name, slot=None, coll_index=None):
         blobj.empty_display_size = 0.5
         if slot is None:                   # added without a model: remember the chosen type for export
             blobj['mj_type_name'] = item_name
+    if slot is None:
+        scene = context.scene
+        defaults = provider.new_object_defaults(state.map_name(scene) or 'Forge World', item_name,
+                                                state.template_bytes(scene))
+        if defaults:
+            blobj['mj_type_name'] = item_name
+            fp = blobj.forge
+            with suspend_updates():
+                fp.objectType = defaults['id']
+                fp.cachedType = defaults['cached_type']
+                fp.spawnTime = defaults['respawn']
+                fp.physics = PHYSICS_TO_ENUM[defaults['physics']]
+                fp.symmetry = SYMMETRY_TO_ENUM[defaults['symmetry']]
+                fp.placeAtStart = defaults['place_at_start']
+                fp.gameSpecific = defaults['game_specific']
+                fp.shape = SHAPE_TO_ENUM[defaults['shape']]
+                fp.width, fp.length = defaults['width'], defaults['length']
+                fp.top, fp.bottom = defaults['top'], defaults['bottom']
+                fp.otherInfoA, fp.otherInfoB = defaults['other_a'], defaults['other_b']
+            if defaults['shape']:
+                update_shape(blobj)
     return blobj
 
 
@@ -568,6 +594,23 @@ def _angle_between(a, b):
     return math.atan2(math.sqrt(sum(c * c for c in cross)), sum(x * y for x, y in zip(a, b)))
 
 
+def legacy_native_rotation(obj, current):
+    """Resolve untouched rotations from an older .blend without exporting its display-only guess."""
+    if obj.get('mj_orientation_basis') == 'native':
+        return None
+    scene = _scene_of(obj)
+    stored = state.get(scene)
+    if stored is None or stored.get('hypothesis', {}).get('orientation_basis') == 'native':
+        return None
+    base = _pose_prop(obj, BASE_KEY)
+    if base is None or _pose_prop(obj, POSE_KEY) is None:
+        return None
+    if _angle_between(current[1], base[1]) > POSE_ANG_TOL or _angle_between(current[2], base[2]) > POSE_ANG_TOL:
+        return None
+    return provider.imported_native_orientation(state.template_bytes(scene), obj.get('mj_slot'),
+                                                obj.get('mj_raw'), obj.get('mj_raw_bits'))
+
+
 def exported_pose(obj, current):
     """``(position, forward, up)`` to hand to the library for ``obj``, whose Blender-side pose is ``current``.
 
@@ -583,6 +626,10 @@ def exported_pose(obj, current):
     position = original[0] if _distance(current[0], base[0]) <= POSE_POS_TOL else current[0]
     turned = (_angle_between(current[1], base[1]) > POSE_ANG_TOL or _angle_between(current[2], base[2]) > POSE_ANG_TOL)
     forward, up = (current[1], current[2]) if turned else (original[1], original[2])
+    if not turned:
+        native = legacy_native_rotation(obj, current)
+        if native is not None:
+            forward, up = native
     return position, forward, up
 
 
@@ -608,7 +655,7 @@ def apply_record(obj, rec, scene):
         fp.objectType = rec.type_id if rec.type_id >= 0 else -1
         fp.cachedType = _clamp(rec.cached_type, 0, 31)
         fp.gtLabel = state.label_enum_id(rec.label_index)
-        fp.otherInfoA = _clamp(rec.other_a, 0, 255)
+        fp.otherInfoA = _clamp(rec.other_a, -1 if rec.cached_type == 19 else 0, 255)
         fp.otherInfoB = _clamp(rec.other_b, 0, 255)
         fp.physics = PHYSICS_TO_ENUM.get(rec.physics, 'NORMAL')
         fp.team = team_to_enum(rec.team)
@@ -879,6 +926,11 @@ def drawForgeObjectProperties(self, context, region):
         col.prop(obj, 'instance_collection', text="")
     if 'mj_slot' in obj:
         layout.label(text="Map slot: %d" % obj['mj_slot'])
+    if fprops.cachedType == 0:
+        defaults = provider.new_object_defaults(state.map_name(context.scene) or 'Forge World',
+                                                forge_type_name(obj), state.template_bytes(context.scene))
+        if defaults and defaults['native_verified'] and defaults['cached_type'] == 1:
+            layout.operator('forge.enable_native_settings', text='Enable Weapon Settings')
 
     col = layout.column(align=True)
     col.use_property_split = width > 160
@@ -896,6 +948,10 @@ def drawForgeObjectProperties(self, context, region):
         col.label(text="Teleporter")
         col.prop(fprops, 'otherInfoA', text="Channel")
         col.prop(fprops, 'otherInfoB', text="Flags")
+    elif fprops.cachedType == 19:
+        col = layout.column(align=True)
+        col.label(text="Location Name")
+        col.prop(fprops, 'otherInfoA', text="Name Index (-1 = None)")
 
     col = layout.column(align=True)
     if wide:
@@ -1366,9 +1422,79 @@ def _on_depsgraph_update(scene, depsgraph=None):
 
 
 # --- registration ---------------------------------------------------------------------------------------------
+class EnableNativeSettings(Operator):
+    """Enable a legacy object's verified stock settings while keeping its placement"""
+    bl_idname = 'forge.enable_native_settings'
+    bl_label = 'Enable Native Object Settings'
+    bl_options = {'REGISTER', 'UNDO'}
+
+    @classmethod
+    def poll(cls, context):
+        return bool(context.selected_objects and context.selected_objects[0].get('isForgeObject'))
+
+    def execute(self, context):
+        obj = context.selected_objects[0]
+        defaults = provider.new_object_defaults(state.map_name(context.scene) or 'Forge World',
+                                                forge_type_name(obj), state.template_bytes(context.scene))
+        if not defaults or not defaults['native_verified'] or obj.forge.cachedType != 0:
+            self.report({'ERROR'}, 'Verified stock settings are unavailable for this object and template')
+            return {'CANCELLED'}
+        obj.forge.cachedType = defaults['cached_type']
+        obj.forge.otherInfoA = defaults['other_a']
+        obj.forge.otherInfoB = defaults['other_b']
+        self.report({'INFO'}, 'Enabled stock object settings; placement was kept')
+        return {'FINISHED'}
+
+
+class RefreshForgePreviews(Operator):
+    """Reload preview models from the selected library without changing Forge properties or poses"""
+    bl_idname = 'forge.refresh_previews'
+    bl_label = 'Refresh Forge Object Previews'
+    bl_options = {'REGISTER', 'UNDO'}
+
+    @classmethod
+    def poll(cls, context):
+        return context.scene is not None
+
+    def execute(self, context):
+        if not palette.ensure_palette():
+            self.report({'ERROR'}, palette.palette_missing_warning())
+            return {'CANCELLED'}
+        models = palette.collection_index()
+        refreshed = 0
+        for obj in context.scene.objects:
+            if obj.type != 'EMPTY' or not obj.get('isForgeObject'):
+                continue
+            collection = models.get(forge_type_name(obj))
+            if collection is None:
+                continue
+            pose = obj.matrix_world.copy()
+            native = legacy_native_rotation(obj, pose_from_matrix(pose))
+            if native is not None:
+                forward, up = native
+                corrected = basis_matrix(forward, up, pose.col[3].xyz)
+                for axis in range(3):
+                    corrected.col[axis].xyz *= pose.col[axis].xyz.length
+                pose = corrected
+                original = _pose_prop(obj, POSE_KEY)
+                base = _pose_prop(obj, BASE_KEY)
+                obj[POSE_KEY] = _flat((original[0], forward, up))
+                new_view = pose_from_matrix(pose)
+                obj[BASE_KEY] = _flat((base[0], new_view[1], new_view[2]))
+                obj['mj_orientation_basis'] = 'native'
+            obj.instance_type = 'COLLECTION'
+            obj.instance_collection = collection
+            obj.empty_display_size = 0.0001
+            obj.matrix_world = pose
+            apply_color_index(obj.forge)
+            refreshed += 1
+        self.report({'INFO'}, 'Refreshed %d Forge object previews; placements and properties were kept' % refreshed)
+        return {'FINISHED'}
+
+
 CLASSES = [
     ForgeObjectProps, ForgeCollectionProps, ForgeSceneProps,
-    AddForgeObject, ConvertForge, SetupArray, ErrorMessage, ScaleObjects,
+    AddForgeObject, ConvertForge, SetupArray, ErrorMessage, ScaleObjects, RefreshForgePreviews, EnableNativeSettings,
     ForgeObjectPanel, ForgeObjectPanel_Sidebar, AddForgeObjectMenu, ForgeCollectionPanel, ForgeScenePanel,
 ] + MENU_POOL
 

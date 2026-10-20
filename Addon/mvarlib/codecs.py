@@ -295,6 +295,49 @@ def reconstruct_orientation(up_global, up_code, angle_raw):
     return forward, up
 
 
+def native_tilt_reference(up):
+    """Pinned Reach FUN_1800dbff4: normalize Y-cross-up or up-cross-X.
+
+    The branch is abs(up.y) > abs(up.x). Its two output axes are
+    corroborated by disassembly of DLL SHA-256 738dd2d2...b0894.
+    """
+    return _normalise((0.0, up[2], -up[1]) if abs(up[1]) > abs(up[0])
+                      else (up[2], 0.0, -up[0]))
+
+
+def reconstruct_native_orientation(up_global, up_code, angle_raw):
+    if up_global:
+        return reconstruct_orientation(up_global, up_code, angle_raw)
+    up = up_decode(up_code)
+    reference = native_tilt_reference(up)
+    side = _cross(up, reference)
+    angle = angle_decode(angle_raw)
+    return tuple(reference[i] * math.cos(angle) + side[i] * math.sin(angle) for i in range(3)), up
+
+
+def up_encode_native(vector):
+    """Native 20-bit face/tangent packing; ties prefer Z, then Y, then X."""
+    up = tuple(f32(value) for value in _normalise(tuple(float(v) for v in vector)))
+    absolute = tuple(abs(v) for v in up)
+    axis = 0 if absolute[0] > absolute[1] and absolute[0] > absolute[2] else (1 if absolute[1] > absolute[2] else 2)
+    face = axis if up[axis] > 0 else axis + 3
+    step = f32(2.0 / 416.0)
+    tangents = [f32(v / absolute[axis]) for i, v in enumerate(up) if i != axis]
+    cells = [min(415, max(0, int(f32(f32(v + 1.0) / step)))) for v in tangents]
+    return face * UP_STRIDE + cells[0] * UP_N + cells[1]
+
+
+def orientation_encode_native(forward, up):
+    u = _normalise(tuple(float(v) for v in up))
+    if abs(u[0]) < 0.0001 and abs(u[1]) < 0.0001 and abs(u[2] - 1.0) < 0.0001:
+        return 1, None, angle_encode(math.atan2(forward[1], forward[0]))
+    code = up_encode_native(u)
+    stored_up = up_decode(code)
+    reference = native_tilt_reference(stored_up)
+    side = _cross(stored_up, reference)
+    return 0, code, angle_encode(math.atan2(_dot(forward, side), _dot(forward, reference)))
+
+
 # ---------------------------------------------------------------------------------------------
 # 3.9 / 3.11 Placement byte, team and colour views
 # ---------------------------------------------------------------------------------------------

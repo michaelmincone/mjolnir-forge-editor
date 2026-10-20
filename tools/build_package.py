@@ -105,9 +105,22 @@ def _ignore_factory(with_library):
     return ignore
 
 
-def stage(dest, with_library=False):
+def stage(dest, with_library=False, library_path=None):
     """Copy ``Addon/`` to ``dest`` (which must not exist) without the excluded files."""
-    shutil.copytree(ADDON_DIR, dest, ignore=_ignore_factory(with_library))
+    shutil.copytree(ADDON_DIR, dest, ignore=_ignore_factory(with_library and library_path is None))
+    if with_library and library_path is not None:
+        source = _real(library_path)
+        if not os.path.isfile(source):
+            raise BuildError('object library not found: ' + source)
+        target = os.path.join(dest, LIBRARY_REL)
+        os.makedirs(os.path.dirname(target), exist_ok=True)
+        if sys.platform == 'darwin':
+            # APFS copy-on-write keeps the staged file independent without
+            # reserving a second full model-library allocation up front.
+            subprocess.run(['/bin/cp', '-c', source, target], check=True,
+                           stdin=subprocess.DEVNULL, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        else:
+            shutil.copy2(source, target)
 
 
 def run_blender(blender, args, user_resources):
@@ -143,7 +156,7 @@ def inspect_zip(path, with_library):
 
 
 def build(out_dir, blender=DEFAULT_BLENDER, allow_placeholders=False, with_library=False, keep_stage=False,
-          log=print):
+          log=print, library_path=None):
     """Build the extension zip into ``out_dir``; returns the zip path. Raises :class:`BuildError`."""
     if is_inside_tree(out_dir):
         raise BuildError("refusing --out %s: it is inside the repository working tree" % out_dir)
@@ -161,7 +174,7 @@ def build(out_dir, blender=DEFAULT_BLENDER, allow_placeholders=False, with_libra
         raise BuildError("the temporary folder %s is inside the repository" % work)
     try:
         stage_dir = os.path.join(work, "stage")
-        stage(stage_dir, with_library)
+        stage(stage_dir, with_library, library_path)
         profile = os.path.join(work, "user_res")
         before = set(os.listdir(out_dir))
         code, text = run_blender(blender, ["validate", stage_dir], profile)
@@ -200,14 +213,18 @@ def main(argv=None):
     ap.add_argument("--blender", default=os.environ.get("BLENDER", DEFAULT_BLENDER))
     ap.add_argument("--allow-placeholders", action="store_true", help="build although the manifest holds placeholders")
     ap.add_argument("--with-library", action="store_true", help="owner's own machine only: include Halo Reach.blend")
+    ap.add_argument('--library', help='local object library to bundle instead of the original (requires --with-library)')
     ap.add_argument("--i-accept-that-this-copies-game-assets", action="store_true", dest="accept_assets")
     ap.add_argument("--keep-stage", action="store_true")
     args = ap.parse_args(argv)
     if args.with_library and not args.accept_assets:
         print("build_package: --with-library also needs --i-accept-that-this-copies-game-assets", file=sys.stderr)
         return 2
+    if args.library and not args.with_library:
+        print('build_package: --library requires --with-library', file=sys.stderr)
+        return 2
     try:
-        build(args.out, args.blender, args.allow_placeholders, args.with_library, args.keep_stage)
+        build(args.out, args.blender, args.allow_placeholders, args.with_library, args.keep_stage, library_path=args.library)
     except BuildError as exc:
         print("build_package: %s" % exc, file=sys.stderr)
         return 1
