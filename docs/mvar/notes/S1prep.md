@@ -1,5 +1,7 @@
 # S1prep notes: preparing the block star (NOTES.md D10 / D10a)
 
+Path update (2026-10-21): existing checkout and tool references use the current `~/Documents/Halo_MCC/` layout. References to `real-mvar-samples/`, `maps/headstrong-star/` are historical artifacts absent from this checkout; examples requiring them are not ready to run. Recorded test results and literal historical default strings are unchanged.
+
 Written for the orchestrator to merge into `NOTES.md`; `NOTES.md` itself was not edited. Nothing was committed (working tree
 only, git state untouched). Section numbers ("SPEC 5.6") refer to `docs/mvar/SPEC-mvar.md`. The procedure for the real file is
 `docs/mvar/STAR_BUILD.md`. Everything here was built and tested against the stub providers and the synthetic stand-in library;
@@ -27,7 +29,7 @@ while this was written), `tests/stubs/stub_mvarlib.py`, `api.py`, `errors.py`, a
 ## How to run
 
 ```
-cd ~/Local_Documents/Halo-MCC/forge/Mjolnir-Forge-Editor
+cd ~/Documents/Halo_MCC/mjolnir-forge-editor/source
 /usr/bin/python3 -I tools/run_tests.py --only test_star_layout test_star_build_tool test_star_roundtrip_stub
 /Applications/Blender.app/Contents/Resources/5.2/python/bin/python3.13 -I tools/run_tests.py --only test_star_layout test_star_build_tool test_star_roundtrip_stub
 tools/run_star_tests.sh --unit            # Blender test s1 (package + isolated profile) and the pure tests on both interpreters
@@ -35,8 +37,8 @@ tools/run_star_tests.sh --dev             # the same Blender test with the fast 
 # or the plain command (add-on enabled at startup, stub provider, stand-in library built by the test):
 $BL -b --factory-startup --python-exit-code 1 --addons <module> --python tests/blender/s1_star_stub.py -- --provider stub
 # the star itself, stub rehearsal (keeps nothing), then the real one once G5 exists:
-tools/run_star_build.sh --template T.mvar --out ~/Local_Documents/Halo-MCC/forge/maps/headstrong-star/star.mvar --provider stub --real-library   # or MJOLNIR_LIBRARY=<stand-in> instead of --real-library
-tools/run_star_build.sh --template ~/Local_Documents/Halo-MCC/forge/real-mvar-samples/0aaaf8c7-5ae6-43ba-bb4d-37c987f5e8b8.mvar --out ~/Local_Documents/Halo-MCC/forge/maps/headstrong-star/breakneck_star.mvar --real-library [--dry-run]
+tools/run_star_build.sh --template T.mvar --out ~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/maps/headstrong-star/star.mvar --provider stub --real-library   # or MJOLNIR_LIBRARY=<stand-in> instead of --real-library
+tools/run_star_build.sh --template ~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/real-mvar-samples/0aaaf8c7-5ae6-43ba-bb4d-37c987f5e8b8.mvar --out ~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/maps/headstrong-star/breakneck_star.mvar --real-library [--dry-run]
 ```
 
 ## Results

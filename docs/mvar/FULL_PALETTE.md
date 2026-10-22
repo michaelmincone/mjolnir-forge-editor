@@ -1,7 +1,8 @@
 # Full Forge World palette amendment
 
-This amendment extends the frozen original `SPEC-mvar.md` without changing that
-reference document or its API contract. Added on 2026-10-19 for the user's full
+This amendment extends the frozen original `SPEC-mvar.md` without changing its
+API contract. Local filesystem references in the specification were rebased on
+2026-10-21; its technical decisions and recorded results remain historical. Added on 2026-10-19 for the user's full
 348-object support goal.
 
 ## Native evidence

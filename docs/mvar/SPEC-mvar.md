@@ -1,7 +1,9 @@
 # SPEC: Halo: Reach map variant (`.mvar`) import/export for Mjolnir Forge Editor on macOS
 
+Path update (2026-10-21): existing checkout and tool references use the current `~/Documents/Halo_MCC/` layout. References to `test-samples/` are historical artifacts absent from this checkout; examples requiring them are not ready to run. Recorded test results and literal historical default strings are unchanged.
+
 Status: decision-ready implementation spec, v1.1 (2026-10-09), revised in place after two adversarial lint passes (format and codec; plan, Blender and done-criteria). Every applied, partly applied and rejected lint item is listed in Appendix F (change log) and Appendix E (rejected lint items). Audience: the engineers who build gates G0 to G7 (section 11) without re-reading the research reports.
-Repo: `~/Local_Documents/Mjolnir-Forge-Editor`, branch `macos-mvar`. Target: Blender 5.2.1 LTS (Python 3.13.13) on macOS arm64; the pure-Python library must also run on system Python 3.9.6.
+Repo: `~/Documents/Halo_MCC/mjolnir-forge-editor/source`, branch `macos-mvar`. Target: Blender 5.2.1 LTS (Python 3.13.13) on macOS arm64; the pure-Python library must also run on system Python 3.9.6.
 
 This spec was written after reading, in full: the six research reports, `critique-format-correctness.md`, `critique-plan-feasibility.md`, `map_variant_mvar.js` (Cobb), the RVT C++ sources named in the task, `forge.py` v0.9.9.2, `ForgeObject.cs`, `Map.cs`, the repo state, and the prototypes; plus 24 independent spot-checks (Appendix A) and 20 further checks made during the revision (Appendix A.2). Where the reports conflict, the conflict is listed in section 1.5 with the decision and the reason.
 
@@ -73,7 +75,7 @@ This spec was written after reading, in full: the six research reports, `critiqu
   - [6.4 The frozen interface (Addon/mvarlib/api.py): the contract between G3/G5 and G4](#64-the-frozen-interface-addonmvarlibapipy-the-contract-between-g3g5-and-g4)
   - [6.5 Tool-facing helper API (not frozen, used by tools/)](#65-tool-facing-helper-api-not-frozen-used-by-tools)
   - [6.6 Plain-dict / JSON form (to_plain / from_plain)](#66-plain-dict--json-form-to_plain--from_plain)
-  - [6.7 Command-line tools (~/Local_Documents/Mjolnir-Forge-Editor/tools/)](#67-command-line-tools-local_documentsmjolnir-forge-editortools)
+  - [6.7 Command-line tools](#67-command-line-tools)
   - [6.8 Python compatibility rules (3.9 to 3.13)](#68-python-compatibility-rules-39-to-313)
 - [7. Validation rules for import and export](#7-validation-rules-for-import-and-export)
   - [7.1 Data sources](#71-data-sources)
@@ -139,7 +141,7 @@ This spec was written after reading, in full: the six research reports, `critiqu
 | Tag | Meaning |
 |---|---|
 | `V` | VERIFIED-ON-REAL-FILES. Reproduced by a script on the real Reach **game-variant** files (`_blf/chdr/mpvr/_eof`; 8 paths, 5 distinct contents). Valid for the container, the bit-stream conventions, the shared UGC header and the `mpvr` hash. It is **never** evidence for an `mvar`-body claim. |
-| `P:file:line` | PRIMARY-SOURCE. A named local file and line. Abbreviations: `JS` = `~/Local_Documents/ReachVariantTool/html/src/raw/map_variant_mvar.js` (Cobb 2020; comment at line 835: "everything above confirmed accurate via memory inspection of haloreach.dll"); `RVT` = `~/Local_Documents/ReachVariantTool/native/src/ReachVariantTool/`; `MJ` = this repo. |
+| `P:file:line` | PRIMARY-SOURCE. A named local file and line. Abbreviations: `JS` = `~/Documents/Halo_MCC/halo-reach-variant-tool/html/src/raw/map_variant_mvar.js` (Cobb 2020; comment at line 835: "everything above confirmed accurate via memory inspection of haloreach.dll"); `RVT` = `~/Documents/Halo_MCC/halo-reach-variant-tool/native/src/ReachVariantTool/`; `MJ` = this repo. |
 | `W:HMS` | WEB. Sopitive/HaloMapStudio `crates/hms-app/src/mvar.rs` and `h4/mvar.rs` (PolyForm Noncommercial; **facts only, no code copied**). The only source that documents MCC load behaviour. Single source unless another tag is next to it. |
 | `W:BLF` | WEB. Blam-Network/blf `scenario_map_variant.rs` (no licence; **facts only**). A 360-era (TU1 build 12065) independent implementation. |
 | `W:URL` | other WEB page, URL given. |
@@ -464,7 +466,7 @@ Let `end` be the bit position after the quota table (section 3.7). The reader cl
 
 ### 2.13 Path and write policy for output files (library, `mvarlib.io`)
 
-- `write_atomic(target, data, source_paths=(), protected=None)` (every tool that writes a file goes through it, the command-line tools included, not only the add-on): refuse (`PathPolicyError`) if `target` resolves (`os.path.realpath`) to the same file as any source path given, or lies under a protected directory (defaults: `~/Local_Documents/rvt-test-samples`, `~/Local_Documents/ReachVariantTool-core-library`; configurable in add-on preferences). Otherwise write `<target>.tmp-<pid>` in the same directory with `O_EXCL`, `fsync`, then `os.replace`. Never create a `.bak`. Never rename an existing file.
+- `write_atomic(target, data, source_paths=(), protected=None)` (every tool that writes a file goes through it, the command-line tools included, not only the add-on): refuse (`PathPolicyError`) if `target` resolves (`os.path.realpath`) to the same file as any source path given, or lies under a protected directory (historical default strings: `~/Local_Documents/rvt-test-samples`, `~/Local_Documents/ReachVariantTool-core-library`; configurable in add-on preferences). Otherwise write `<target>.tmp-<pid>` in the same directory with `O_EXCL`, `fsync`, then `os.replace`. Never create a `.bak`. Never rename an existing file.
 - `check_output_path(target, source_paths=(), protected=None)` runs the same two checks without writing and returns the `Issue` (`E_PATH_SAME_AS_SOURCE` or `E_PATH_PROTECTED`) or `None`; the export operator calls it before collecting any object.
 - Default output name: `<source stem>_mjolnir.mvar` in the source file's directory. If that directory is, or lies inside, a protected folder, the operator proposes `~/Documents/Mjolnir Exports/<stem>_mjolnir.mvar` instead (the folder is created on export), so the proposed default is never a refused path.
 - After writing the temp file and **before** `os.replace`, re-read it and run `verify_roundtrip` (parse with the same options, same hypotheses, expected set of changed slots). A failure deletes the temp file and refuses.
@@ -1081,7 +1083,7 @@ W1's golden edits (Appendix C) fix concrete expected results: E1 changes only th
 
 ## 6. Library API: `mvarlib`
 
-Location: `~/Local_Documents/Mjolnir-Forge-Editor/Addon/mvarlib/`. Pure Python, standard library only (`struct`, `zlib`, `hashlib`, `math`, `json`, `os`, `io`, `dataclasses`, `typing`), **no `bpy`**, no absolute imports of its own package (relative imports only, so it works as `mvarlib` from the tools and as `mjolnir_forge.mvarlib` inside Blender).
+Location: `~/Documents/Halo_MCC/mjolnir-forge-editor/source/Addon/mvarlib/`. Pure Python, standard library only (`struct`, `zlib`, `hashlib`, `math`, `json`, `os`, `io`, `dataclasses`, `typing`), **no `bpy`**, no absolute imports of its own package (relative imports only, so it works as `mvarlib` from the tools and as `mjolnir_forge.mvarlib` inside Blender).
 
 ### 6.1 Module layout
 
@@ -1370,7 +1372,9 @@ Purpose: load a map variant into plain data and write it back; golden fixtures; 
 ```
 Only present slots are listed (absent slots are implicit). `from_plain(to_plain(m)).to_bytes(force=True) == original` for every fixture of shape `plain4` / `plain4+fsm` (for the `cmp` shapes: the golden expanded file); `header.raw_hex` is the exact bit range padded to bytes plus `header.raw_bits`.
 
-### 6.7 Command-line tools (`~/Local_Documents/Mjolnir-Forge-Editor/tools/`)
+### 6.7 Command-line tools
+
+Tools directory: `~/Documents/Halo_MCC/mjolnir-forge-editor/source/tools/`.
 
 All tools run as `python3 -I tools/<tool>.py`. Because `-I` removes the script directory from `sys.path`, each tool begins with `sys.path.insert(0, <repo>/Addon)` computed from `__file__` and `import mvarlib`.
 
@@ -1758,7 +1762,7 @@ The ctypes `float3`/`ForgeObject` structures and `from ctypes import *`; `dllPat
 ### 9.2 Environment and drivers
 
 ```bash
-REPO=~/Local_Documents/Mjolnir-Forge-Editor
+REPO=~/Documents/Halo_MCC/mjolnir-forge-editor/source
 BL=/Applications/Blender.app/Contents/MacOS/Blender               # Blender 5.2.1 LTS
 PY39=/usr/bin/python3                                              # must report 3.9.x; run_tests.sh aborts otherwise (PATH order is not trusted: /opt/homebrew/bin/python3 is 3.14.7 here)
 PY313=/Applications/Blender.app/Contents/Resources/5.2/python/bin/python3.13   # 3.13.13, zlib 1.3.1 (verified to run with -I)
@@ -1978,7 +1982,7 @@ def export_map_variant(template, objects, options) -> ExportResult    # records 
 
 ### G0. Spec acceptance, repo guards, interface freeze
 
-Deliverables (paths relative to `~/Local_Documents/Mjolnir-Forge-Editor`):
+Deliverables (paths relative to `~/Documents/Halo_MCC/mjolnir-forge-editor/source`):
 - This spec accepted by the owner and committed with its reference material (all synthetic, no game data): `docs/mvar/SPEC-mvar.md` and `docs/mvar/reference/{bitio_prototype.py, blf_container.py, w1_build.py, w1_parse.py}` (DEC-G0.1). The `research/` paths named in G1, G2 and Appendix C then mean `docs/mvar/...`; the research reports themselves stay outside the repo.
 - **Repo hygiene (binding F; DEC-F.1: the three pieces already exist uncommitted, so G0 reviews and completes rather than creates).** `.gitignore` and `.gitattributes` already carry the port's additions as *uncommitted working-tree changes* (`dist/`, `build/`, `*.zip`, `*.mvar`, `*.mglo`, `__pycache__/`, `scratch/` ...; `*.mvar binary`, `*.bin binary`, `*.mglo binary` `S`): review the diff and commit. `tools/check_no_game_assets.py` already exists (uncommitted): it allowlists files identical to `origin/master` and rejects new binary-looking files, files starting with `_blf`, and anything over 512 KB. G0 **adds** the hash allowlist fallback (the three pre-existing binaries: `Addon/Resources/ForgeBridge.dll` sha256 `e1296523...2e48`, `Addon/Resources/Halo Reach.blend` `a76e1d74...e6ad`, `Blender (Download a Release, Not Me!)/forge.blend` `35cc9130...5ae8`) for when `origin/master` is not available, a `--self-test`, the test U-17 (with U-17b), and the ignored-files scan (**DEC-F.2**): replace the untracked listing `git ls-files -z --others --exclude-standard` by `git ls-files -z --others` (no `--exclude-standard`) and drop entries under `__pycache__/` and `*.pyc`, because the port's own `.gitignore` hides `*.mvar`, `*.zip`, `dist/`, `build/` and `scratch/`, so a game file placed there would otherwise pass (reproduced `S` in a temp repo with the real `.gitignore`: `git status --short` and the first draft's guard both showed nothing). Package zips are built outside the tree (`tools/build_package.py`, G4) and contain no game asset by default (DEC-8.10).
 - `Addon/mvarlib/{__init__,api,errors,entry,tables,io}.py`: `api.py` and `errors.py` exactly as 6.2 and 6.4 including the re-export line and the five helpers; `entry.py` with bodies that raise `NotImplementedError("G3")` / `("G5")`; `tables.py` and `io.py` complete; `Addon/provider.py`; `tests/stubs/stub_mvarlib.py` (canned Forge World map: 5 objects incl. one model-less, one kill-boundary box, one tilted object, plus the extra canned data of the cross-gate contract above; `export_map_variant` records its arguments in `LAST_EXPORT`, returns `ok = True` with `data = template`, a naive diff, and can be told to return preset `Issue`s so UI tests can exercise refusals).
@@ -2215,10 +2219,10 @@ The first three rows were computed by the format lint's independent builder and 
 
 | Short name | Path |
 |---|---|
-| JS | `~/Local_Documents/ReachVariantTool/html/src/raw/map_variant_mvar.js` (846 lines): axis bits 79-150; shape 152-286; position 289-330; up axis 331-455; angle 456-565; slot 566-643; header 702-744; body 745-769; labels 771-827; slots 831-833; quota 837-845 |
-| RVT | `~/Local_Documents/ReachVariantTool/native/src/ReachVariantTool/`: `formats/ugc_header.cpp` (15-53 read, 87-121 write), `ugc_header.h` (13-31 enums, 51), `content_author.cpp`, `compressed_float.h`, `localized_string_table.{h,cpp}`, `sha1.h` (salt), `block.cpp` (24-51 header, 152-184 `_cmp`), `game_variants/base.cpp` (30-46 `_eof`, 144-165 and 243-278 hash, 383 chdr note), `helpers/bitreader.cpp`, `ui/script_editor/page_map_perms.cpp` (15-58) |
-| Mjolnir | `~/Local_Documents/Mjolnir-Forge-Editor/`: `Blender (Download a Release, Not Me!)/forge.py` v0.9.9.2 (1436 lines), `Addon/{mjolnir,objects,TwoWayDict,__init__,parse_palette}.py`, `ForgeLib/{ForgeObject,Map,ItemParser,ForgeBridge}.cs`, `NOTES.md`, `tools/check_no_game_assets.py` |
-| Real samples | `~/Local_Documents/rvt-test-samples/*.bin` (3), `~/Local_Documents/ReachVariantTool-core-library/macos/Fixtures/*.bin` (5) |
+| JS | `~/Documents/Halo_MCC/halo-reach-variant-tool/html/src/raw/map_variant_mvar.js` (846 lines): axis bits 79-150; shape 152-286; position 289-330; up axis 331-455; angle 456-565; slot 566-643; header 702-744; body 745-769; labels 771-827; slots 831-833; quota 837-845 |
+| RVT | `~/Documents/Halo_MCC/halo-reach-variant-tool/native/src/ReachVariantTool/`: `formats/ugc_header.cpp` (15-53 read, 87-121 write), `ugc_header.h` (13-31 enums, 51), `content_author.cpp`, `compressed_float.h`, `localized_string_table.{h,cpp}`, `sha1.h` (salt), `block.cpp` (24-51 header, 152-184 `_cmp`), `game_variants/base.cpp` (30-46 `_eof`, 144-165 and 243-278 hash, 383 chdr note), `helpers/bitreader.cpp`, `ui/script_editor/page_map_perms.cpp` (15-58) |
+| Mjolnir | `~/Documents/Halo_MCC/mjolnir-forge-editor/source/`: `Blender (Download a Release, Not Me!)/forge.py` v0.9.9.2 (1436 lines), `Addon/{mjolnir,objects,TwoWayDict,__init__,parse_palette}.py`, `ForgeLib/{ForgeObject,Map,ItemParser,ForgeBridge}.cs`, `NOTES.md`, `tools/check_no_game_assets.py` |
+| Real samples | `~/Documents/Halo_MCC/halo-reach-variant-tool/test-samples/*.bin` (3), `~/Documents/Halo_MCC/halo-reach-variant-tool/macos/Fixtures/*.bin` (5) |
 | Research (session scratchpad, outside the repo; G0 copies the synthetic reference scripts into `docs/mvar/reference/`) | `/private/tmp/claude-501/-Users-michaelmincone-Local-Documents/6d5fba7a-3008-4537-951e-dacfdc34a893/scratchpad/research/`: `lint-format.md`, `lint-plan.md`, `addon-architecture.md`, `blender-5-2.md`, `container-and-bit-conventions.md`, `object-library-inventory.md`, `upstream-mvar-branch.md`, `web-mvar-format.md`, `critique-format-correctness.md`, `critique-plan-feasibility.md`, `blf_container.py`, `bitio_prototype.py`, `tables/`, `crit_format/`, `crit_plan/`, `spec_w1/` |
 | Blender tests (reference) | `.../scratchpad/blender_tests/` (`t07_mock_roundtrip.py`, `t13_ui_draw_mock.py`, `t16_650.py`, `run_suite.sh`, `proto_src/mjolnir_forge/`) |
 | Web (facts only) | HMS: `https://raw.githubusercontent.com/Sopitive/HaloMapStudio/HEAD/crates/hms-app/src/mvar.rs` and `.../h4/mvar.rs` (PolyForm Noncommercial); BLF: `https://raw.githubusercontent.com/Blam-Network/blf/HEAD/blf_lib/src/blam/haloreach/v12065_11_08_24_1738_tu1actual/saved_games/scenario_map_variant.rs` (no licence); KSoft.Blam: `https://raw.githubusercontent.com/KornnerStudios/KSoft.Blam/main/KSoft.Blam/Blob/Presentation/GameEngineVariantBlob.cs` (MIT); `https://developer.blender.org/docs/release_notes/5.0/python_api/` |

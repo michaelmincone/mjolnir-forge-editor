@@ -1,8 +1,10 @@
 # Building the block star on the real Breakneck map variant
 
+Path update (2026-10-21): existing checkout and tool references use the current `~/Documents/Halo_MCC/` layout. References to `real-mvar-samples/`, `maps/headstrong-star/` are historical artifacts absent from this checkout; examples requiring them are not ready to run. Recorded test results and literal historical default strings are unchanged.
+
 Status: **built (gate S1, 2026-10-10).** The script was prepared and tested against the stub providers (S1prep); with the real
 writer of gate G5 it has now produced the star on the real Breakneck file: `Headstrong_Star.mvar`, 39 blocks, in
-`~/Local_Documents/Halo-MCC/forge/maps/headstrong-star/` (outside the repository). What was decided and measured for that run (block, design,
+`~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/maps/headstrong-star/` (outside the repository). What was decided and measured for that run (block, design,
 place, clearances, every warning) is in `docs/mvar/notes/S1.md` and in `STAR_REPORT.md` beside the file; the commands that
 made it are under "The exact commands" below. The sections that follow keep the original description of the tool.
 
@@ -24,7 +26,7 @@ profile so that your own Blender settings are not touched.
 
 ## What the real file looks like (read with the real reader, read-only)
 
-Facts about `~/Local_Documents/Halo-MCC/forge/real-mvar-samples/0aaaf8c7-5ae6-43ba-bb4d-37c987f5e8b8.mvar` that decide how the star is built
+Facts about `~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/real-mvar-samples/0aaaf8c7-5ae6-43ba-bb4d-37c987f5e8b8.mvar` that decide how the star is built
 (measured on the day this was written, with the reader of gate G3 as it was then; re-run the dry run to see current values):
 
 | fact | value | consequence |
@@ -86,34 +88,34 @@ The command that produced the S1 deliverable (the place came from `tools/star_pl
 chosen by measuring the real library, see `docs/mvar/notes/S1.md`):
 
 ```bash
-cd ~/Local_Documents/Halo-MCC/forge/Mjolnir-Forge-Editor
-mkdir -p ~/Local_Documents/Halo-MCC/forge/maps/headstrong-star
-T=~/Local_Documents/Halo-MCC/forge/real-mvar-samples/0aaaf8c7-5ae6-43ba-bb4d-37c987f5e8b8.mvar
-tools/run_star_build.sh --template $T --out ~/Local_Documents/Halo-MCC/forge/maps/headstrong-star/Headstrong_Star.mvar --real-library \
+cd ~/Documents/Halo_MCC/mjolnir-forge-editor/source
+mkdir -p ~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/maps/headstrong-star
+T=~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/real-mvar-samples/0aaaf8c7-5ae6-43ba-bb4d-37c987f5e8b8.mvar
+tools/run_star_build.sh --template $T --out ~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/maps/headstrong-star/Headstrong_Star.mvar --real-library \
     --block "Block, 1x1" --shape pixel39 --center 13.25,-15.75,17.0 --raise-quota-max          # add --dry-run first to rehearse
 python3 -I tools/star_placement.py search  $T                                                   # where the star has the most room
-python3 -I tools/star_placement.py measure $T ~/Local_Documents/Halo-MCC/forge/maps/headstrong-star/Headstrong_Star.mvar   # clearances of the built file
-python3 -I tools/verify_star_output.py $T ~/Local_Documents/Halo-MCC/forge/maps/headstrong-star/Headstrong_Star.mvar \
+python3 -I tools/star_placement.py measure $T ~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/maps/headstrong-star/Headstrong_Star.mvar   # clearances of the built file
+python3 -I tools/verify_star_output.py $T ~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/maps/headstrong-star/Headstrong_Star.mvar \
     --shape pixel39 --center 13.25,-15.75,17.0 --preview                                       # independent check, exit 0 = all passed
-python3 -I tools/verify_mvar.py ~/Local_Documents/Halo-MCC/forge/maps/headstrong-star/Headstrong_Star.mvar          # the T3 decode report, exit 0
+python3 -I tools/verify_mvar.py ~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/maps/headstrong-star/Headstrong_Star.mvar          # the T3 decode report, exit 0
 ```
 
 The generic procedure (sampled grid, auto block) follows.
 
 ```bash
-cd ~/Local_Documents/Halo-MCC/forge/Mjolnir-Forge-Editor
-mkdir -p ~/Local_Documents/Halo-MCC/forge/maps/headstrong-star
+cd ~/Documents/Halo_MCC/mjolnir-forge-editor/source
+mkdir -p ~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/maps/headstrong-star
 
 # 1. Rehearsal: everything, including the export and the verification, but nothing is kept.
 tools/run_star_build.sh \
-    --template ~/Local_Documents/Halo-MCC/forge/real-mvar-samples/0aaaf8c7-5ae6-43ba-bb4d-37c987f5e8b8.mvar \
-    --out ~/Local_Documents/Halo-MCC/forge/maps/headstrong-star/breakneck_star.mvar \
+    --template ~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/real-mvar-samples/0aaaf8c7-5ae6-43ba-bb4d-37c987f5e8b8.mvar \
+    --out ~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/maps/headstrong-star/breakneck_star.mvar \
     --real-library --dry-run
 
 # 2. The real run (same command without --dry-run). Exit status 0 only if every check passed.
 tools/run_star_build.sh \
-    --template ~/Local_Documents/Halo-MCC/forge/real-mvar-samples/0aaaf8c7-5ae6-43ba-bb4d-37c987f5e8b8.mvar \
-    --out ~/Local_Documents/Halo-MCC/forge/maps/headstrong-star/breakneck_star.mvar \
+    --template ~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/real-mvar-samples/0aaaf8c7-5ae6-43ba-bb4d-37c987f5e8b8.mvar \
+    --out ~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/maps/headstrong-star/breakneck_star.mvar \
     --real-library
 ```
 
@@ -126,8 +128,8 @@ inside the repository, `--out star.mvar` is the repository and is refused.
 ```bash
 PYTHONDONTWRITEBYTECODE=1 /Applications/Blender.app/Contents/MacOS/Blender -b --factory-startup --python-use-system-env \
     --python-exit-code 1 --addons mjolnir_forge --python tools/build_star_mvar.py -- \
-    --template ~/Local_Documents/Halo-MCC/forge/real-mvar-samples/0aaaf8c7-5ae6-43ba-bb4d-37c987f5e8b8.mvar \
-    --out ~/Local_Documents/Halo-MCC/forge/maps/headstrong-star/breakneck_star.mvar --real-library
+    --template ~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/real-mvar-samples/0aaaf8c7-5ae6-43ba-bb4d-37c987f5e8b8.mvar \
+    --out ~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/maps/headstrong-star/breakneck_star.mvar --real-library
 ```
 
 `--addons` takes the add-on's module name: `mjolnir_forge` for the working-tree loop above, `bl_ext.user_default.mjolnir_forge`

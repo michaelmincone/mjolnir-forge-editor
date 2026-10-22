@@ -117,7 +117,7 @@ Tools: `tools/run_blender_tests.sh`. Not touched: `build_package.py`, `gen_palet
 
 ## How to run / results (Blender 5.2.1 LTS, Python 3.13.13; system Python 3.9.6)
 ```
-cd ~/Local_Documents/Halo-MCC/forge/Mjolnir-Forge-Editor
+cd ~/Documents/Halo_MCC/mjolnir-forge-editor/source
 tools/run_blender_tests.sh                       # package + isolated profile + B-01 alone + run_all (stub)   -> exit 0
 tools/run_blender_tests.sh --real-library        # same, real Halo Reach.blend linked read-only                  -> exit 0
 tools/run_blender_tests.sh --provider real       # B-01 passes, 17 tests SKIP                                     -> exit 3 "SKIPPED"

@@ -1,5 +1,7 @@
 # Mjolnir Forge Editor for Mac
 
+Local checkout: `~/Documents/Halo_MCC/mjolnir-forge-editor/source`. Run this source tree's development commands there. The [workspace guide](../forge-workspace/LOCAL_WORKSPACE.md) lists the current map, library and package locations.
+
 A Blender add-on for building Halo: Reach Forge maps on a Mac. It opens a Forge map file (`.mvar`) in Blender, lets you move, delete and add Forge objects there, and saves the result as a new `.mvar` that you can upload to your File Share and play on Xbox. The game never needs to run on the Mac.
 
 This is a Mac port of [Mjolnir Forge Editor](https://github.com/Waffle1434/Mjolnir-Forge-Editor) by Waffle1434. The original edits a running copy of Halo: Reach on a Windows PC through a DLL; this version reads and writes map files instead.
@@ -20,8 +22,8 @@ A legacy imported weapon can use **Enable Weapon Settings** to expose spare clip
 
 The [full-palette format amendment](docs/mvar/FULL_PALETTE.md) records native
 evidence and behavior. The local implementation plan, model extraction, visual
-catalog and verification reports are in `../object-support/` and
-`../object-catalog/`. Previews are static; game animation, screen effects and
+catalog and verification reports are in `../forge-workspace/object-support/` and
+`../forge-workspace/object-catalog/`. Previews are static; game animation, screen effects and
 physics are not simulated. Offline verification does not establish Xbox runtime
 behavior. No extension is installed or map published by these build tools.
 
@@ -48,22 +50,21 @@ Open [Claude Code](https://claude.com/claude-code), or another AI assistant that
 ```text
 Set up the Mjolnir Forge Editor Blender add-on on my Mac from
 https://github.com/michaelmincone/mjolnir-forge-editor.
-Clone it, read README.md and docs/mvar/INSTALL_MACOS.md, and check that Blender 5.2.1 is installed.
-Build the add-on zip into a folder outside the repo, run tools/run_tests.sh and tell me whether everything passed.
-Then walk me through installing the zip in Blender and pointing the add-on at Addon/Resources/Halo Reach.blend.
+Use the existing checkout at ~/Documents/Halo_MCC/mjolnir-forge-editor/source. Read README.md and docs/mvar/INSTALL_MACOS.md, and check that Blender is available.
+Build the add-on zip into ~/Documents/Halo_MCC/mjolnir-forge-editor/packages, outside this source tree. Run tools/run_tests.sh and tell me whether everything passed.
+Then walk me through installing the zip in Blender and pointing the add-on at ~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/object-support/assets/full-v04/Halo Reach.blend.
 Never edit or overwrite any .mvar file I give you; work on copies.
 ```
 
 ## Set it up by hand
 
 ```bash
-git clone https://github.com/michaelmincone/mjolnir-forge-editor.git
-cd mjolnir-forge-editor
-python3 tools/build_package.py --out ~/Desktop/mjolnir-addon --allow-placeholders
+cd ~/Documents/Halo_MCC/mjolnir-forge-editor/source
+python3 tools/build_package.py --out ~/Documents/Halo_MCC/mjolnir-forge-editor/packages --allow-placeholders
 ```
 
-1. In Blender, open **Edit > Preferences > Get Extensions**, choose **Install from Disk...** from the menu at the top right, pick `~/Desktop/mjolnir-addon/mjolnir_forge-1.1.0.zip`, and enable it.
-2. In the add-on's preferences, set **Library path** to `Addon/Resources/Halo Reach.blend` in this repo. That file holds the object models; without it, objects import as empties.
+1. In Blender, open **Edit > Preferences > Get Extensions**, choose **Install from Disk...** from the menu at the top right, pick `~/Documents/Halo_MCC/mjolnir-forge-editor/packages/mjolnir_forge-1.1.0.zip`, and enable it.
+2. In the add-on's preferences, set **Library path** to `~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/object-support/assets/full-v04/Halo Reach.blend`. That file holds the object models; without it, objects import as empties.
 3. Use **File > Import** and **File > Export** as described above.
 
 `tools/run_tests.sh` runs the full test suite (it needs `/usr/bin/python3` and Blender's own Python). `tools/verify_mvar.py <file.mvar>` checks any map file without Blender. [docs/mvar/INSTALL_MACOS.md](docs/mvar/INSTALL_MACOS.md) has the details, and [NOTES.md](NOTES.md) records every design decision and what is still unverified.

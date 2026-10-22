@@ -1,9 +1,11 @@
 # Decode summary of the real map variant `0aaaf8c7-5ae6-43ba-bb4d-37c987f5e8b8.mvar`
 
+Path update (2026-10-21): existing checkout and tool references use the current `~/Documents/Halo_MCC/` layout. References to `real-mvar-samples/` are historical artifacts absent from this checkout; examples requiring them are not ready to run. Recorded test results and literal historical default strings are unchanged.
+
 Gate G3 (docs/mvar/SPEC-mvar.md, tier T3-real). **Numbers and names only**: no bytes, no bit stream, no mesh or tag data of the game is
 reproduced here (object names are the names of the repository's own stock table, `Addon/mvarlib/data/stock_objects.json`, and the label strings
 are the file's own 21 short Forge labels). Produced by `python3 -I tools/verify_mvar.py` plus read-only analysis scripts on the unmodified
-original at `~/Local_Documents/Halo-MCC/forge/real-mvar-samples/` (sha256 `e514a53b...79bb254`, checked unchanged after every run). Nothing here was typed from
+original at `~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/real-mvar-samples/` (sha256 `e514a53b...79bb254`, checked unchanged after every run). Nothing here was typed from
 memory: every figure is reproduced by `tests/unit/test_real_mvar.py` (it skips loudly when the file is absent).
 
 ## 1. Verdict

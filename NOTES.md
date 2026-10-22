@@ -1,5 +1,7 @@
 # NOTES: macOS port of Mjolnir Forge Editor (map variant files, no game running)
 
+Path update (2026-10-21): existing checkout and tool references use the current `~/Documents/Halo_MCC/` layout. References to `real-mvar-samples/`, `maps/headstrong-star/`, `test-samples/` are historical artifacts absent from this checkout; examples requiring them are not ready to run. Recorded test results and literal historical default strings are unchanged.
+
 ## 2026-10-19: complete Forge World support (offline verification complete)
 
 The `codex/full-forge-world` branch separates the complete 348-type browser from
@@ -34,7 +36,7 @@ full-library creation/export of all 348 types, refresh/save/reopen exact export
 preservation, legacy orientation migration and packaged startup with 348 modeled
 objects. All 348 catalog pictures and 21 labeled sheets were checked. A live
 gallery browser check was blocked by URL policy; local catalog assets were
-verified. Package hashes and the evidence matrix are in `../object-support/`.
+verified. Package hashes and the evidence matrix are in `../forge-workspace/object-support/`.
 
 Fresh REA/Ghidra evidence establishes native 3D orientations as well as palette
 and location codecs. Static preview materials approximate game shading; invisible
@@ -43,19 +45,19 @@ gameplay remain unverified. The complete goal covers offline implementation and
 explicitly reports those runtime limits.
 
 Research, native source hashes, REA evidence, reports and the live implementation
-plan are in `../object-support/`. No extension was installed and no map published.
+plan are in `../forge-workspace/object-support/`. No extension was installed and no map published.
 
 Historical notes below refer to branch `macos-mvar` (cloned from `master` of github.com/Waffle1434/Mjolnir-Forge-Editor).
 This file records decisions, uncertainties and things to know. It is updated as the work proceeds.
 
-2026-10-13: this repository moved to `~/Local_Documents/Halo-MCC/forge/Mjolnir-Forge-Editor`. The protected sample folders moved with it: `rvt-test-samples` is now `Halo-MCC/variant-tool/test-samples`, `real-mvar-samples` is `Halo-MCC/forge/real-mvar-samples`, `ReachVariantTool-core-library` is `Halo-MCC/variant-tool/ReachVariantTool-core-library`, and `mjolnir-output` is `Halo-MCC/forge/maps/headstrong-star`. `io.py`, the tools, the tests and these notes use the new paths; `docs/mvar/SPEC-mvar.md` is a frozen copy and still names the old ones.
+Historical relocation note (2026-10-13; paths rebased on 2026-10-21): this source tree is currently at `~/Documents/Halo_MCC/mjolnir-forge-editor/source`. The older sample folders and Headstrong Star outputs referenced below are absent. ReachVariantTool fixtures now live at `~/Documents/Halo_MCC/halo-reach-variant-tool/macos/Fixtures/`. These are documentation path updates; historical source-code defaults and test results have not been migrated or rerun.
 
 ## Decisions log (most reasonable choice made, work continued)
 
 ### D1. There are no Reach *map variant* sample files on this Mac
 - The only "sample" files found anywhere on this machine are Reach **game variants** (`.bin`, chunk `mpvr`):
-  `~/Local_Documents/Halo-MCC/variant-tool/test-samples/*.bin` (3 files) and
-  `~/Local_Documents/Halo-MCC/variant-tool/ReachVariantTool-core-library/macos/Fixtures/*.bin` (5 files).
+  `~/Documents/Halo_MCC/halo-reach-variant-tool/test-samples/*.bin` (3 files) and
+  `~/Documents/Halo_MCC/halo-reach-variant-tool/macos/Fixtures/*.bin` (5 files).
   Their `_blf` container is the same family as a map variant's, but the payload chunk is `mpvr`, not `mvar`.
 - Searches by extension and name (`*.mvar`, `*forge*`, `*mjolnir*`, `*.bin`) in Downloads, Desktop, Documents, Movies,
   Pictures and `Local_Documents` found nothing relevant, and no branch of the repo contains a `.mvar`/`.bin`/sample file.
@@ -156,7 +158,7 @@ SHA-256 of the data files at G0: `maps.json` `fbbbe28f41f4852b8ea8936fdef176d256
 
 ### How to run the G0 checks
 ```
-cd ~/Local_Documents/Halo-MCC/forge/Mjolnir-Forge-Editor
+cd ~/Documents/Halo_MCC/mjolnir-forge-editor/source
 /usr/bin/python3 -I tools/run_tests.py                       # the unit suite on system Python 3.9 (U-21 wraps the run)
 /Applications/Blender.app/Contents/Resources/5.2/python/bin/python3.13 -I tools/run_tests.py   # same on 3.13
 tools/run_tests.sh                                           # guard + guard self-test + 3.9 import/lint scan + both interpreters
@@ -171,7 +173,7 @@ Found 2026-10-09 in the **git history of the user's ReachVariantTool clone** (no
 missed it): blob `b178158c8a24c9e20bf1a57d84b760a27bfdc059`, path `native/src/ReachVariantTool/0aaaf8c7-5ae6-43ba-bb4d-37c987f5e8b8.mvar`,
 added by DavidJCobb in commit `f948fede` (2019-12-30, "We now validate contentType when loading"), deleted in `4cffebcc`.
 Extracted with `git cat-file` (byte-exact: `git hash-object` of the copy equals the blob id) to
-`~/Local_Documents/Halo-MCC/forge/real-mvar-samples/0aaaf8c7-5ae6-43ba-bb4d-37c987f5e8b8.mvar` (read-only, outside this repo; the game-file guard would reject it
+`~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/real-mvar-samples/0aaaf8c7-5ae6-43ba-bb4d-37c987f5e8b8.mvar` (read-only, outside this repo; the game-file guard would reject it
 here). sha256 `e514a53b61977a897ac9dbf7225085aa01b5b255f3c8079b5938ef87579bb254`. Treat it as an original: never modify, work on copies.
 
 Verified on this one real file (inspected with `xxd` and `shasum` only; nothing decoded beyond the first header bits):
@@ -193,7 +195,7 @@ Design choices made (most reasonable, not asked):
 - Blocks get physics = Fixed (the only placement-byte bits the spec allows editing, DEC-3.9) so they do not fall when the match starts.
 - The block type must be one the **template already contains** if possible, so cachedType / placement byte / flags are copied from a real object in the real file (SPEC 5.6 "learned example"); otherwise a stock block from the Breakneck table with a loud warning.
 - Limits enforced as always: stock map (Breakneck 10050), stock objects only, existing objects + new blocks <= 650, quota max/placed respected per folder, positions inside the stored bounds (never clamped). Forge budget cannot be recomputed offline (prices live in game data, SPEC 5.8): the star size is kept modest and the budget words are reported, not changed.
-- Output goes OUTSIDE the repo (the guard rejects .mvar files here): `~/Local_Documents/Halo-MCC/forge/maps/headstrong-star/`.
+- Output goes OUTSIDE the repo (the guard rejects .mvar files here): `~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/maps/headstrong-star/`.
 Honest status of this deliverable: ADDING objects is the least-verified edit in the spec (MCC acceptance estimated ~0.5 by the spec author; unmeasurable without the game and the owner has no Windows PC). The delivered file will be labelled unverified-in-game.
 
 ### D10a. Target platform: Xbox (owner, 2026-10-10: "xbox cannot have modded maps")
@@ -224,11 +226,11 @@ spec wording defects are listed in `docs/mvar/notes/G1.md`, `G2.md`, `G3.md`, `G
   every refusal writes no file. The owner's acceptance test passes headlessly on the REAL file with the REAL writer: import (610 objects) -> move an object -> export ->
   re-import: the move is intact within the file's 0.0048 quantisation step, the other 609 objects are unchanged, only that object's position bits and the SHA-1 changed.
 * Export rules enforced: stock map, stock objects, 650 objects maximum (610 present, so 40 free), bounds, quotas; originals never overwritten.
-* Deliverable `~/Local_Documents/Halo-MCC/forge/maps/headstrong-star/Headstrong_Star.mvar` (a 39-block `Block, 1x1` star, 649 of 650 objects), with preview, report, a byte-identical
+* Deliverable `~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/maps/headstrong-star/Headstrong_Star.mvar` (a 39-block `Block, 1x1` star, 649 of 650 objects), with preview, report, a byte-identical
   unchanged re-save for test step 1, and the installable add-on zip (no game assets). Independently decoded and checked by two verifiers and by hand by the orchestrator.
 
 ### Unconfirmed (cannot be confirmed on this Mac)
-1. **That MCC loads an edited file, or that an Xbox can get one** (D10a). The owner has no Windows PC. Ladder: `~/Local_Documents/Halo-MCC/forge/maps/headstrong-star/STAR_REPORT.md` section 6.
+1. **That MCC loads an edited file, or that an Xbox can get one** (D10a). The owner has no Windows PC. Ladder: `~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/maps/headstrong-star/STAR_REPORT.md` section 6.
 2. **Only one real map variant was available** (Breakneck). Untested on real data: type-19 objects, parent links, v32 GUID block, out-of-bounds records, `_cmp`/`_fsm` wrappers,
    other maps, labelled/teleporter objects, tilted-object orientation (decode convention unproven; rotation edits are gated off), the disputed placement-flag bits.
 3. The star relies on assumptions (D11): quota maximum of the Block row raised 0 -> 39; object class of blocks assumed 0 (Structure group; consistent with every Structure object in the file);

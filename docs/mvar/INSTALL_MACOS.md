@@ -8,11 +8,14 @@ below and `NOTES.md` (D9 to D11) before relying on an export.
 
 ## Install
 
+Run source-tree commands from `~/Documents/Halo_MCC/mjolnir-forge-editor/source`. The current map-workflow
+paths and offline rules are in [../../../forge-workspace/AGENTS.md](../../../forge-workspace/AGENTS.md).
+
 1. Build the extension (it is built outside the repo and contains **no game assets**):
-   `python3 tools/build_package.py --out <some folder outside the repo> --allow-placeholders`
+   `python3 tools/build_package.py --out ~/Documents/Halo_MCC/mjolnir-forge-editor/packages --allow-placeholders`
    (the manifest still holds placeholder maintainer and licence text; the licence line is a placeholder because upstream declares none).
-2. Blender: Edit > Preferences > Get Extensions > (top-right menu) Install from Disk... > choose `mjolnir_forge-1.0.0.zip`, then enable it.
-3. In the add-on's preferences set **Library path** to the object library `Addon/Resources/Halo Reach.blend` of this repo
+2. Blender: Edit > Preferences > Get Extensions > (top-right menu) Install from Disk... > choose `~/Documents/Halo_MCC/mjolnir-forge-editor/packages/mjolnir_forge-1.1.0.zip`, then enable it.
+3. In the add-on's preferences set **Library path** to the full library `~/Documents/Halo_MCC/mjolnir-forge-editor/forge-workspace/object-support/assets/full-v04/Halo Reach.blend`
    (a folder is accepted too; it is linked read-only and never saved). The package deliberately does not include it.
    `$MJOLNIR_LIBRARY` works as an alternative. Without the library, import still works (objects appear as empties).
 
